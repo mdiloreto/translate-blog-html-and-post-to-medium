@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en-US">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>
+  <!-- This site is optimized with the Yoast SEO plugin v21.5 - https://yoast.com/wordpress/plugins/seo/ -->
+  <link href="https://madsblog.net/2023/11/24/storage-persistente-en-gke/" rel="canonical"/>
+  <meta content="en_US" property="og:locale"/>
+  <meta content="article" property="og:type"/>
+  <meta content="Storage Persistente en GKE - Aprende Multi Cloud(s)" property="og:title"/>
+  <meta content="Kubernetes se ha establecido como la herramienta predilecta para desplegar, escalar y gestionar aplicaciones en la nube. Una de las principales razones es su robustez y flexibilidad es su sistema de manejo de volúmenes, diseñado para abordar uno de los desafíos más grandes en la contenerización: la persistencia de datos. En este caso estaremos realizando […]" property="og:description"/>
+  <meta content="https://madsblog.net/2023/11/24/storage-persistente-en-gke/" property="og:url"/>
+  <meta content="Aprende Multi Cloud(s)" property="og:site_name"/>
+  <meta content="2023-11-24T20:05:06+00:00" property="article:published_time"/>
+  <meta content="2023-11-24T21:09:02+00:00" property="article:modified_time"/>
+  <meta content="https://madsblog.net/wp-content/uploads/2023/11/image-65.png" property="og:image"/>
+  <meta content="679" property="og:image:width"/>
+  <meta content="341" property="og:image:height"/>
+  <meta content="image/png" property="og:image:type"/>
+  <meta content="siteadmin" name="author"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="Written by" name="twitter:label1"/>
+  <meta content="siteadmin" name="twitter:data1"/>
+  <meta content="Est. reading time" name="twitter:label2"/>
+  <meta content="7 minutes" name="twitter:data2"/>
+  <script class="yoast-schema-graph" type="application/ld+json">
+   {"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#article","isPartOf":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/"},"author":{"name":"siteadmin","@id":"https://madsblog.net/#/schema/person/8a3c246a5485aa524c0542a3bfe5368c"},"headline":"Storage Persistente en GKE","datePublished":"2023-11-24T20:05:06+00:00","dateModified":"2023-11-24T21:09:02+00:00","mainEntityOfPage":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/"},"wordCount":859,"commentCount":0,"publisher":{"@id":"https://madsblog.net/#/schema/person/b60eb9910e5d26c5bdde941561c902ea"},"image":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#primaryimage"},"thumbnailUrl":"https://madsblog.net/wp-content/uploads/2023/11/image-65.png","articleSection":["GCP","GKE","Kubernetes"],"inLanguage":"en-US","potentialAction":[{"@type":"CommentAction","name":"Comment","target":["https://madsblog.net/2023/11/24/storage-persistente-en-gke/#respond"]}]},{"@type":"WebPage","@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/","url":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/","name":"Storage Persistente en GKE - Aprende Multi Cloud(s)","isPartOf":{"@id":"https://madsblog.net/#website"},"primaryImageOfPage":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#primaryimage"},"image":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#primaryimage"},"thumbnailUrl":"https://madsblog.net/wp-content/uploads/2023/11/image-65.png","datePublished":"2023-11-24T20:05:06+00:00","dateModified":"2023-11-24T21:09:02+00:00","breadcrumb":{"@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://madsblog.net/2023/11/24/storage-persistente-en-gke/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#primaryimage","url":"https://madsblog.net/wp-content/uploads/2023/11/image-65.png","contentUrl":"https://madsblog.net/wp-content/uploads/2023/11/image-65.png","width":679,"height":341},{"@type":"BreadcrumbList","@id":"https://madsblog.net/2023/11/24/storage-persistente-en-gke/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://madsblog.net/"},{"@type":"ListItem","position":2,"name":"Storage Persistente en GKE"}]},{"@type":"WebSite","@id":"https://madsblog.net/#website","url":"https://madsblog.net/","name":"Mads Blog","description":"Blog IT de Mateo Di Loreto","publisher":{"@id":"https://madsblog.net/#/schema/person/b60eb9910e5d26c5bdde941561c902ea"},"alternateName":"Mateo Agustin Di Loreto's Blog","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://madsblog.net/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":["Person","Organization"],"@id":"https://madsblog.net/#/schema/person/b60eb9910e5d26c5bdde941561c902ea","name":"Mateo Di Loreto","image":{"@type":"ImageObject","inLanguage":"en-US","@id":"https://madsblog.net/#/schema/person/image/","url":"https://madsblog.net/wp-content/uploads/2023/08/IMG_28652.jpg","contentUrl":"https://madsblog.net/wp-content/uploads/2023/08/IMG_28652.jpg","width":854,"height":930,"caption":"Mateo Di Loreto"},"logo":{"@id":"https://madsblog.net/#/schema/person/image/"},"sameAs":["http://Madsblog.net"]},{"@type":"Person","@id":"https://madsblog.net/#/schema/person/8a3c246a5485aa524c0542a3bfe5368c","name":"siteadmin","image":{"@type":"ImageObject","inLanguage":"en-US","@id":"https://madsblog.net/#/schema/person/image/","url":"https://secure.gravatar.com/avatar/4ca4e07fa35a520dbaec17a099de877d?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/4ca4e07fa35a520dbaec17a099de877d?s=96&d=mm&r=g","caption":"siteadmin"},"sameAs":["https://madsblog.net"],"url":"https://madsblog.net/author/siteadmin/"}]}
+  </script>
+  <!-- / Yoast SEO plugin. -->
+  <title>
+   Storage Persistente en GKE - Aprende Multi Cloud(s)
+  </title>
+  <link href="//static.addtoany.com" rel="dns-prefetch"/>
+  <style id="wp-block-paragraph-inline-css">
+   .is-small-text{font-size:.875em}.is-regular-text{font-size:1em}.is-large-text{font-size:2.25em}.is-larger-text{font-size:3em}.has-drop-cap:not(:focus):first-letter{float:left;font-size:8.4em;font-style:normal;font-weight:100;line-height:.68;margin:.05em .1em 0 0;text-transform:uppercase}body.rtl .has-drop-cap:not(:focus):first-letter{float:none;margin-left:.1em}p.has-drop-cap.has-background{overflow:hidden}p.has-background{padding:1.25em 2.375em}:where(p.has-text-color:not(.has-link-color)) a{color:inherit}p.has-text-align-left[style*="writing-mode:vertical-lr"],p.has-text-align-right[style*="writing-mode:vertical-rl"]{rotate:180deg}
+  </style>
+  <link href="https://madsblog.net/wp-includes/blocks/image/style.min.css?ver=6.4.1" id="wp-block-image-css" media="all" rel="stylesheet"/>
+  <style id="wp-block-navigation-link-inline-css">
+   .wp-block-navigation .wp-block-navigation-item__label{overflow-wrap:break-word}.wp-block-navigation .wp-block-navigation-item__description{display:none}
+  </style>
+  <link href="https://madsblog.net/wp-includes/blocks/navigation/style.min.css?ver=6.4.1" id="wp-block-navigation-css" media="all" rel="stylesheet"/>
+  <style id="wp-block-navigation-inline-css">
+   .wp-block-navigation{font-size: var(--wp--preset--font-size--small);}
+.wp-block-navigation a:where(:not(.wp-element-button)){color: inherit;text-decoration: none;}
+.wp-block-navigation a:where(:not(.wp-element-button)):hover{text-decoration: underline;}
+.wp-block-navigation a:where(:not(.wp-element-button)):focus{text-decoration: underline dashed;}
+.wp-block-navigation a:where(:not(.wp-element-button)):active{text-decoration: none;}
+  </style>
+  <style id="wp-block-group-inline-css">
+   .wp-block-group{box-sizing:border-box}
+  </style>
+  <style id="wp-block-post-title-inline-css">
+   .wp-block-post-title{box-sizing:border-box;word-break:break-word}.wp-block-post-title a{display:inline-block}
+.wp-block-post-title{font-weight: 400;margin-top: 1.25rem;margin-bottom: 1.25rem;}
+.wp-block-post-title a:where(:not(.wp-element-button)){text-decoration: none;}
+.wp-block-post-title a:where(:not(.wp-element-button)):hover{text-decoration: underline;}
+.wp-block-post-title a:where(:not(.wp-element-button)):focus{text-decoration: underline dashed;}
+.wp-block-post-title a:where(:not(.wp-element-button)):active{color: var(--wp--preset--color--secondary);text-decoration: none;}
+  </style>
+  <style id="wp-block-heading-inline-css">
+   h1.has-background,h2.has-background,h3.has-background,h4.has-background,h5.has-background,h6.has-background{padding:1.25em 2.375em}h1.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h1.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h2.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h2.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h3.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h3.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h4.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h4.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h5.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h5.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h6.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h6.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]){rotate:180deg}
+  </style>
+  <style id="wp-block-list-inline-css">
+   ol,ul{box-sizing:border-box}ol.has-background,ul.has-background{padding:1.25em 2.375em}
+  </style>
+  <link href="https://madsblog.net/wp-content/plugins/code-block-pro/build/style-index.css?ver=1.13.0" id="kevinbatdorf-code-block-pro-style-css" media="all" rel="stylesheet"/>
+  <style id="wp-block-post-content-inline-css">
+   .wp-block-post-content a:where(:not(.wp-element-button)){color: var(--wp--preset--color--secondary);}
+  </style>
+  <style id="wp-block-spacer-inline-css">
+   .wp-block-spacer{clear:both}
+  </style>
+  <style id="wp-block-separator-inline-css">
+   @charset "UTF-8";.wp-block-separator{border:1px solid;border-left:none;border-right:none}.wp-block-separator.is-style-dots{background:none!important;border:none;height:auto;line-height:1;text-align:center}.wp-block-separator.is-style-dots:before{color:currentColor;content:"···";font-family:serif;font-size:1.5em;letter-spacing:2em;padding-left:2em}
+.wp-block-separator{border-color: var(--wp--preset--color--tertiary);border-width: 2px;}
+  </style>
+  <style id="wp-block-post-date-inline-css">
+   .wp-block-post-date{box-sizing:border-box}
+.wp-block-post-date{font-size: var(--wp--preset--font-size--small);font-weight: 400;}
+.wp-block-post-date a:where(:not(.wp-element-button)){text-decoration: none;}
+.wp-block-post-date a:where(:not(.wp-element-button)):hover{text-decoration: underline;}
+  </style>
+  <style id="wp-block-post-terms-inline-css">
+   .wp-block-post-terms{box-sizing:border-box}.wp-block-post-terms .wp-block-post-terms__separator{white-space:pre-wrap}
+.wp-block-post-terms{font-size: var(--wp--preset--font-size--small);}
+  </style>
+  <style id="wp-block-post-author-inline-css">
+   .wp-block-post-author{display:flex;flex-wrap:wrap}.wp-block-post-author__byline{font-size:.5em;margin-bottom:0;margin-top:0;width:100%}.wp-block-post-author__avatar{margin-right:1em}.wp-block-post-author__bio{font-size:.7em;margin-bottom:.7em}.wp-block-post-author__content{flex-basis:0;flex-grow:1}.wp-block-post-author__name{margin:0}
+.wp-block-post-author{font-size: var(--wp--preset--font-size--small);}
+  </style>
+  <style id="wp-block-columns-inline-css">
+   .wp-block-columns{align-items:normal!important;box-sizing:border-box;display:flex;flex-wrap:wrap!important}@media (min-width:782px){.wp-block-columns{flex-wrap:nowrap!important}}.wp-block-columns.are-vertically-aligned-top{align-items:flex-start}.wp-block-columns.are-vertically-aligned-center{align-items:center}.wp-block-columns.are-vertically-aligned-bottom{align-items:flex-end}@media (max-width:781px){.wp-block-columns:not(.is-not-stacked-on-mobile)>.wp-block-column{flex-basis:100%!important}}@media (min-width:782px){.wp-block-columns:not(.is-not-stacked-on-mobile)>.wp-block-column{flex-basis:0;flex-grow:1}.wp-block-columns:not(.is-not-stacked-on-mobile)>.wp-block-column[style*=flex-basis]{flex-grow:0}}.wp-block-columns.is-not-stacked-on-mobile{flex-wrap:nowrap!important}.wp-block-columns.is-not-stacked-on-mobile>.wp-block-column{flex-basis:0;flex-grow:1}.wp-block-columns.is-not-stacked-on-mobile>.wp-block-column[style*=flex-basis]{flex-grow:0}:where(.wp-block-columns){margin-bottom:1.75em}:where(.wp-block-columns.has-background){padding:1.25em 2.375em}.wp-block-column{flex-grow:1;min-width:0;overflow-wrap:break-word;word-break:break-word}.wp-block-column.is-vertically-aligned-top{align-self:flex-start}.wp-block-column.is-vertically-aligned-center{align-self:center}.wp-block-column.is-vertically-aligned-bottom{align-self:flex-end}.wp-block-column.is-vertically-aligned-stretch{align-self:stretch}.wp-block-column.is-vertically-aligned-bottom,.wp-block-column.is-vertically-aligned-center,.wp-block-column.is-vertically-aligned-top{width:100%}
+  </style>
+  <style id="wp-block-comments-title-inline-css">
+   .wp-block-comments-title{font-size: var(--wp--preset--font-size--large);margin-bottom: var(--wp--preset--spacing--40);}
+  </style>
+  <style id="wp-block-comment-template-inline-css">
+   .wp-block-comment-template{box-sizing:border-box;list-style:none;margin-bottom:0;max-width:100%;padding:0}.wp-block-comment-template li{clear:both}.wp-block-comment-template ol{list-style:none;margin-bottom:0;max-width:100%;padding-left:2rem}.wp-block-comment-template.alignleft{float:left}.wp-block-comment-template.aligncenter{margin-left:auto;margin-right:auto;width:-moz-fit-content;width:fit-content}.wp-block-comment-template.alignright{float:right}
+  </style>
+  <style id="wp-block-comments-pagination-inline-css">
+   .wp-block-comments-pagination>.wp-block-comments-pagination-next,.wp-block-comments-pagination>.wp-block-comments-pagination-numbers,.wp-block-comments-pagination>.wp-block-comments-pagination-previous{margin-bottom:.5em;margin-right:.5em}.wp-block-comments-pagination>.wp-block-comments-pagination-next:last-child,.wp-block-comments-pagination>.wp-block-comments-pagination-numbers:last-child,.wp-block-comments-pagination>.wp-block-comments-pagination-previous:last-child{margin-right:0}.wp-block-comments-pagination .wp-block-comments-pagination-previous-arrow{display:inline-block;margin-right:1ch}.wp-block-comments-pagination .wp-block-comments-pagination-previous-arrow:not(.is-arrow-chevron){transform:scaleX(1)}.wp-block-comments-pagination .wp-block-comments-pagination-next-arrow{display:inline-block;margin-left:1ch}.wp-block-comments-pagination .wp-block-comments-pagination-next-arrow:not(.is-arrow-chevron){transform:scaleX(1)}.wp-block-comments-pagination.aligncenter{justify-content:center}
+.wp-block-comments-pagination{margin-top: var(--wp--preset--spacing--40);}
+.wp-block-comments-pagination a:where(:not(.wp-element-button)){text-decoration: none;}
+  </style>
+  <style id="wp-block-post-comments-form-inline-css">
+   .wp-block-post-comments-form{box-sizing:border-box}.wp-block-post-comments-form[style*=font-weight] :where(.comment-reply-title){font-weight:inherit}.wp-block-post-comments-form[style*=font-family] :where(.comment-reply-title){font-family:inherit}.wp-block-post-comments-form[class*=-font-size] :where(.comment-reply-title),.wp-block-post-comments-form[style*=font-size] :where(.comment-reply-title){font-size:inherit}.wp-block-post-comments-form[style*=line-height] :where(.comment-reply-title){line-height:inherit}.wp-block-post-comments-form[style*=font-style] :where(.comment-reply-title){font-style:inherit}.wp-block-post-comments-form[style*=letter-spacing] :where(.comment-reply-title){letter-spacing:inherit}.wp-block-post-comments-form input[type=submit]{box-shadow:none;cursor:pointer;display:inline-block;overflow-wrap:break-word;text-align:center}.wp-block-post-comments-form input:not([type=submit]),.wp-block-post-comments-form textarea{border:1px solid #949494;font-family:inherit;font-size:1em}.wp-block-post-comments-form input:not([type=submit]):not([type=checkbox]),.wp-block-post-comments-form textarea{padding:calc(.667em + 2px)}.wp-block-post-comments-form .comment-form input:not([type=submit]):not([type=checkbox]):not([type=hidden]),.wp-block-post-comments-form .comment-form textarea{box-sizing:border-box;display:block;width:100%}.wp-block-post-comments-form .comment-form-author label,.wp-block-post-comments-form .comment-form-email label,.wp-block-post-comments-form .comment-form-url label{display:block;margin-bottom:.25em}.wp-block-post-comments-form .comment-form-cookies-consent{display:flex;gap:.25em}.wp-block-post-comments-form .comment-form-cookies-consent #wp-comment-cookies-consent{margin-top:.35em}.wp-block-post-comments-form .comment-reply-title{margin-bottom:0}.wp-block-post-comments-form .comment-reply-title :where(small){font-size:var(--wp--preset--font-size--medium,smaller);margin-left:.5em}
+  </style>
+  <style id="wp-block-buttons-inline-css">
+   .wp-block-buttons.is-vertical{flex-direction:column}.wp-block-buttons.is-vertical>.wp-block-button:last-child{margin-bottom:0}.wp-block-buttons>.wp-block-button{display:inline-block;margin:0}.wp-block-buttons.is-content-justification-left{justify-content:flex-start}.wp-block-buttons.is-content-justification-left.is-vertical{align-items:flex-start}.wp-block-buttons.is-content-justification-center{justify-content:center}.wp-block-buttons.is-content-justification-center.is-vertical{align-items:center}.wp-block-buttons.is-content-justification-right{justify-content:flex-end}.wp-block-buttons.is-content-justification-right.is-vertical{align-items:flex-end}.wp-block-buttons.is-content-justification-space-between{justify-content:space-between}.wp-block-buttons.aligncenter{text-align:center}.wp-block-buttons:not(.is-content-justification-space-between,.is-content-justification-right,.is-content-justification-left,.is-content-justification-center) .wp-block-button.aligncenter{margin-left:auto;margin-right:auto;width:100%}.wp-block-buttons[style*=text-decoration] .wp-block-button,.wp-block-buttons[style*=text-decoration] .wp-block-button__link{text-decoration:inherit}.wp-block-buttons.has-custom-font-size .wp-block-button__link{font-size:inherit}.wp-block-button.aligncenter{text-align:center}
+  </style>
+  <style id="wp-block-button-inline-css">
+   .wp-block-button__link{box-sizing:border-box;cursor:pointer;display:inline-block;text-align:center;word-break:break-word}.wp-block-button__link.aligncenter{text-align:center}.wp-block-button__link.alignright{text-align:right}:where(.wp-block-button__link){border-radius:9999px;box-shadow:none;padding:calc(.667em + 2px) calc(1.333em + 2px);text-decoration:none}.wp-block-button[style*=text-decoration] .wp-block-button__link{text-decoration:inherit}.wp-block-buttons>.wp-block-button.has-custom-width{max-width:none}.wp-block-buttons>.wp-block-button.has-custom-width .wp-block-button__link{width:100%}.wp-block-buttons>.wp-block-button.has-custom-font-size .wp-block-button__link{font-size:inherit}.wp-block-buttons>.wp-block-button.wp-block-button__width-25{width:calc(25% - var(--wp--style--block-gap, .5em)*.75)}.wp-block-buttons>.wp-block-button.wp-block-button__width-50{width:calc(50% - var(--wp--style--block-gap, .5em)*.5)}.wp-block-buttons>.wp-block-button.wp-block-button__width-75{width:calc(75% - var(--wp--style--block-gap, .5em)*.25)}.wp-block-buttons>.wp-block-button.wp-block-button__width-100{flex-basis:100%;width:100%}.wp-block-buttons.is-vertical>.wp-block-button.wp-block-button__width-25{width:25%}.wp-block-buttons.is-vertical>.wp-block-button.wp-block-button__width-50{width:50%}.wp-block-buttons.is-vertical>.wp-block-button.wp-block-button__width-75{width:75%}.wp-block-button.is-style-squared,.wp-block-button__link.wp-block-button.is-style-squared{border-radius:0}.wp-block-button.no-border-radius,.wp-block-button__link.no-border-radius{border-radius:0!important}.wp-block-button .wp-block-button__link.is-style-outline,.wp-block-button.is-style-outline>.wp-block-button__link{border:2px solid;padding:.667em 1.333em}.wp-block-button .wp-block-button__link.is-style-outline:not(.has-text-color),.wp-block-button.is-style-outline>.wp-block-button__link:not(.has-text-color){color:currentColor}.wp-block-button .wp-block-button__link.is-style-outline:not(.has-background),.wp-block-button.is-style-outline>.wp-block-button__link:not(.has-background){background-color:transparent;background-image:none}.wp-block-button .wp-block-button__link:where(.has-border-color){border-width:initial}.wp-block-button .wp-block-button__link:where([style*=border-top-color]){border-top-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-right-color]){border-right-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-bottom-color]){border-bottom-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-left-color]){border-left-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-style]){border-width:initial}.wp-block-button .wp-block-button__link:where([style*=border-top-style]){border-top-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-right-style]){border-right-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-bottom-style]){border-bottom-width:medium}.wp-block-button .wp-block-button__link:where([style*=border-left-style]){border-left-width:medium}
+  </style>
+  <style id="wp-block-comments-inline-css">
+   .wp-block-post-comments{box-sizing:border-box}.wp-block-post-comments .alignleft{float:left}.wp-block-post-comments .alignright{float:right}.wp-block-post-comments .navigation:after{clear:both;content:"";display:table}.wp-block-post-comments .commentlist{clear:both;list-style:none;margin:0;padding:0}.wp-block-post-comments .commentlist .comment{min-height:2.25em;padding-left:3.25em}.wp-block-post-comments .commentlist .comment p{font-size:1em;line-height:1.8;margin:1em 0}.wp-block-post-comments .commentlist .children{list-style:none;margin:0;padding:0}.wp-block-post-comments .comment-author{line-height:1.5}.wp-block-post-comments .comment-author .avatar{border-radius:1.5em;display:block;float:left;height:2.5em;margin-right:.75em;margin-top:.5em;width:2.5em}.wp-block-post-comments .comment-author cite{font-style:normal}.wp-block-post-comments .comment-meta{font-size:.875em;line-height:1.5}.wp-block-post-comments .comment-meta b{font-weight:400}.wp-block-post-comments .comment-meta .comment-awaiting-moderation{display:block;margin-bottom:1em;margin-top:1em}.wp-block-post-comments .comment-body .commentmetadata{font-size:.875em}.wp-block-post-comments .comment-form-author label,.wp-block-post-comments .comment-form-comment label,.wp-block-post-comments .comment-form-email label,.wp-block-post-comments .comment-form-url label{display:block;margin-bottom:.25em}.wp-block-post-comments .comment-form input:not([type=submit]):not([type=checkbox]),.wp-block-post-comments .comment-form textarea{box-sizing:border-box;display:block;width:100%}.wp-block-post-comments .comment-form-cookies-consent{display:flex;gap:.25em}.wp-block-post-comments .comment-form-cookies-consent #wp-comment-cookies-consent{margin-top:.35em}.wp-block-post-comments .comment-reply-title{margin-bottom:0}.wp-block-post-comments .comment-reply-title :where(small){font-size:var(--wp--preset--font-size--medium,smaller);margin-left:.5em}.wp-block-post-comments .reply{font-size:.875em;margin-bottom:1.4em}.wp-block-post-comments input:not([type=submit]),.wp-block-post-comments textarea{border:1px solid #949494;font-family:inherit;font-size:1em}.wp-block-post-comments input:not([type=submit]):not([type=checkbox]),.wp-block-post-comments textarea{padding:calc(.667em + 2px)}:where(.wp-block-post-comments input[type=submit]){border:none}
+  </style>
+  <style id="wp-block-site-title-inline-css">
+   .wp-block-site-title a{color:inherit}
+.wp-block-site-title{font-size: var(--wp--preset--font-size--medium);font-style: normal;font-weight: 600;line-height: 1.4;}
+.wp-block-site-title a:where(:not(.wp-element-button)){text-decoration: none;}
+.wp-block-site-title a:where(:not(.wp-element-button)):hover{text-decoration: underline;}
+.wp-block-site-title a:where(:not(.wp-element-button)):focus{text-decoration: underline dashed;}
+.wp-block-site-title a:where(:not(.wp-element-button)):active{color: var(--wp--preset--color--secondary);text-decoration: none;}
+  </style>
+  <style id="wp-block-library-inline-css">
+   :root{--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,161;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px;--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}.has-text-align-center{text-align:center}.has-text-align-left{text-align:left}.has-text-align-right{text-align:right}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{clip:rect(1px,1px,1px,1px);word-wrap:normal!important;border:0;-webkit-clip-path:inset(50%);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.screen-reader-text:focus{clip:auto!important;background-color:#ddd;-webkit-clip-path:none;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style*=border-top-color]){border-top-style:solid}html :where([style*=border-right-color]){border-right-style:solid}html :where([style*=border-bottom-color]){border-bottom-style:solid}html :where([style*=border-left-color]){border-left-style:solid}html :where([style*=border-width]){border-style:solid}html :where([style*=border-top-width]){border-top-style:solid}html :where([style*=border-right-width]){border-right-style:solid}html :where([style*=border-bottom-width]){border-bottom-style:solid}html :where([style*=border-left-width]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+  </style>
+  <style id="global-styles-inline-css">
+   body{--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--color--base: #2c2c32;--wp--preset--color--contrast: #ffffff;--wp--preset--color--primary: #e3cbc0;--wp--preset--color--secondary: #876C3A;--wp--preset--color--tertiary: #303134;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: clamp(0.85rem, 0.85rem + ((1vw - 0.2rem) * 0.188), 1rem);--wp--preset--font-size--medium: clamp(1.1rem, 1.1rem + ((1vw - 0.2rem) * 0.375), 1.4rem);--wp--preset--font-size--large: clamp(1.999rem, 1.999rem + ((1vw - 0.2rem) * 1.035), 2.827rem);--wp--preset--font-size--x-large: clamp(2.827rem, 2.827rem + ((1vw - 0.2rem) * 1.464), 3.998rem);--wp--preset--font-size--xx-large: clamp(3.2rem, 3.2rem + ((1vw - 0.2rem) * 3.066), 5.653rem);--wp--preset--font-family--dm-sans: "DM Sans", sans-serif;--wp--preset--font-family--ibm-plex-mono: 'IBM Plex Mono', monospace;--wp--preset--font-family--inter: "Inter", sans-serif;--wp--preset--font-family--system-font: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;--wp--preset--font-family--source-serif-pro: "Source Serif Pro", serif;--wp--preset--spacing--20: calc(8px + 1.5625vw);--wp--preset--spacing--30: calc(12px + 1.5625vw);--wp--preset--spacing--40: calc(16px + 1.5625vw);--wp--preset--spacing--50: calc(20px + 1.5625vw);--wp--preset--spacing--60: calc(24px + 1.5625vw);--wp--preset--spacing--70: calc(28px + 1.5625vw);--wp--preset--spacing--80: calc(32px + 1.5625vw);--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}body { margin: 0;--wp--style--global--content-size: min(640px, 90vw);--wp--style--global--wide-size: 90vw; }.wp-site-blocks { padding-top: var(--wp--style--root--padding-top); padding-bottom: var(--wp--style--root--padding-bottom); }.has-global-padding { padding-right: var(--wp--style--root--padding-right); padding-left: var(--wp--style--root--padding-left); }.has-global-padding :where(.has-global-padding:not(.wp-block-block)) { padding-right: 0; padding-left: 0; }.has-global-padding > .alignfull { margin-right: calc(var(--wp--style--root--padding-right) * -1); margin-left: calc(var(--wp--style--root--padding-left) * -1); }.has-global-padding :where(.has-global-padding:not(.wp-block-block)) > .alignfull { margin-right: 0; margin-left: 0; }.has-global-padding > .alignfull:where(:not(.has-global-padding):not(.is-layout-flex):not(.is-layout-grid)) > :where([class*="wp-block-"]:not(.alignfull):not([class*="__"]),p,h1,h2,h3,h4,h5,h6,ul,ol) { padding-right: var(--wp--style--root--padding-right); padding-left: var(--wp--style--root--padding-left); }.has-global-padding :where(.has-global-padding) > .alignfull:where(:not(.has-global-padding)) > :where([class*="wp-block-"]:not(.alignfull):not([class*="__"]),p,h1,h2,h3,h4,h5,h6,ul,ol) { padding-right: 0; padding-left: 0; }.wp-site-blocks > .alignleft { float: left; margin-right: 2em; }.wp-site-blocks > .alignright { float: right; margin-left: 2em; }.wp-site-blocks > .aligncenter { justify-content: center; margin-left: auto; margin-right: auto; }:where(.wp-site-blocks) > * { margin-block-start: var(--wp--preset--spacing--40); margin-block-end: 0; }:where(.wp-site-blocks) > :first-child:first-child { margin-block-start: 0; }:where(.wp-site-blocks) > :last-child:last-child { margin-block-end: 0; }body { --wp--style--block-gap: var(--wp--preset--spacing--40); }:where(body .is-layout-flow)  > :first-child:first-child{margin-block-start: 0;}:where(body .is-layout-flow)  > :last-child:last-child{margin-block-end: 0;}:where(body .is-layout-flow)  > *{margin-block-start: var(--wp--preset--spacing--40);margin-block-end: 0;}:where(body .is-layout-constrained)  > :first-child:first-child{margin-block-start: 0;}:where(body .is-layout-constrained)  > :last-child:last-child{margin-block-end: 0;}:where(body .is-layout-constrained)  > *{margin-block-start: var(--wp--preset--spacing--40);margin-block-end: 0;}:where(body .is-layout-flex) {gap: var(--wp--preset--spacing--40);}:where(body .is-layout-grid) {gap: var(--wp--preset--spacing--40);}body .is-layout-flow > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-flow > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-flow > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}body .is-layout-constrained > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}body .is-layout-constrained > .aligncenter{margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){max-width: var(--wp--style--global--content-size);margin-left: auto !important;margin-right: auto !important;}body .is-layout-constrained > .alignwide{max-width: var(--wp--style--global--wide-size);}body .is-layout-flex{display: flex;}body .is-layout-flex{flex-wrap: wrap;align-items: center;}body .is-layout-flex > *{margin: 0;}body .is-layout-grid{display: grid;}body .is-layout-grid > *{margin: 0;}body{background-color: var(--wp--preset--color--base);color: var(--wp--preset--color--contrast);font-family: var(--wp--preset--font-family--inter);font-size: var(--wp--preset--font-size--medium);line-height: 1.7;--wp--style--root--padding-top: var(--wp--preset--spacing--40);--wp--style--root--padding-right: var(--wp--preset--spacing--70);--wp--style--root--padding-bottom: var(--wp--preset--spacing--40);--wp--style--root--padding-left: var(--wp--preset--spacing--70);}a:where(:not(.wp-element-button)){color: var(--wp--preset--color--contrast);text-decoration: underline;}a:where(:not(.wp-element-button)):hover{text-decoration: none;}a:where(:not(.wp-element-button)):focus{text-decoration: underline dashed;}a:where(:not(.wp-element-button)):active{color: var(--wp--preset--color--secondary);text-decoration: none;}h1, h2, h3, h4, h5, h6{font-weight: 500;line-height: 1.4;}h1{font-size: var(--wp--preset--font-size--xx-large);line-height: 1.1;}h2{font-size: var(--wp--preset--font-size--x-large);line-height: 1.1;}h3{font-size: var(--wp--preset--font-size--large);}h4{font-size: var(--wp--preset--font-size--large);}h5{font-size: var(--wp--preset--font-size--medium);font-weight: 700;text-transform: uppercase;}h6{font-size: var(--wp--preset--font-size--medium);text-transform: uppercase;}.wp-element-button, .wp-block-button__link{background-color: var(--wp--preset--color--primary);border-radius: 0;border-color: var(--wp--preset--color--primary);border-width: 2px;border-style: solid;color: var(--wp--preset--color--base);font-family: inherit;font-size: var(--wp--preset--font-size--small);font-weight: 600;letter-spacing: 0.01em;line-height: inherit;padding-top: min(1.125rem, 3vw) !important;padding-right: min(2.125rem, 5vw) !important;padding-bottom: min(1.125rem, 3vw) !important;padding-left: min(2.125rem, 5vw) !important;text-decoration: none;text-transform: uppercase;}.wp-element-button:visited, .wp-block-button__link:visited{color: var(--wp--preset--color--base);}.wp-element-button:hover, .wp-block-button__link:hover{background-color: var(--wp--preset--color--contrast);border-color: var(--wp--preset--color--contrast);color: var(--wp--preset--color--tertiary);}.wp-element-button:focus, .wp-block-button__link:focus{background-color: var(--wp--preset--color--contrast);border-color: var(--wp--preset--color--contrast);color: var(--wp--preset--color--tertiary);}.wp-element-button:active, .wp-block-button__link:active{background-color: var(--wp--preset--color--contrast);border-color: var(--wp--preset--color--contrast);color: var(--wp--preset--color--tertiary);}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-base-color{color: var(--wp--preset--color--base) !important;}.has-contrast-color{color: var(--wp--preset--color--contrast) !important;}.has-primary-color{color: var(--wp--preset--color--primary) !important;}.has-secondary-color{color: var(--wp--preset--color--secondary) !important;}.has-tertiary-color{color: var(--wp--preset--color--tertiary) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-base-background-color{background-color: var(--wp--preset--color--base) !important;}.has-contrast-background-color{background-color: var(--wp--preset--color--contrast) !important;}.has-primary-background-color{background-color: var(--wp--preset--color--primary) !important;}.has-secondary-background-color{background-color: var(--wp--preset--color--secondary) !important;}.has-tertiary-background-color{background-color: var(--wp--preset--color--tertiary) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-base-border-color{border-color: var(--wp--preset--color--base) !important;}.has-contrast-border-color{border-color: var(--wp--preset--color--contrast) !important;}.has-primary-border-color{border-color: var(--wp--preset--color--primary) !important;}.has-secondary-border-color{border-color: var(--wp--preset--color--secondary) !important;}.has-tertiary-border-color{border-color: var(--wp--preset--color--tertiary) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}.has-xx-large-font-size{font-size: var(--wp--preset--font-size--xx-large) !important;}.has-dm-sans-font-family{font-family: var(--wp--preset--font-family--dm-sans) !important;}.has-ibm-plex-mono-font-family{font-family: var(--wp--preset--font-family--ibm-plex-mono) !important;}.has-inter-font-family{font-family: var(--wp--preset--font-family--inter) !important;}.has-system-font-font-family{font-family: var(--wp--preset--font-family--system-font) !important;}.has-source-serif-pro-font-family{font-family: var(--wp--preset--font-family--source-serif-pro) !important;}
+.wp-block-separator{}.wp-block-separator:not(.is-style-wide):not(.is-style-dots):not(.alignwide):not(.alignfull){width: 100px}
+  </style>
+  <style id="core-block-supports-inline-css">
+   .wp-container-core-navigation-layout-1.wp-container-core-navigation-layout-1{justify-content:flex-end;}.wp-container-core-group-layout-1.wp-container-core-group-layout-1{flex-direction:column;align-items:center;justify-content:center;}.wp-container-core-group-layout-5.wp-container-core-group-layout-5{gap:0.5ch;}.wp-container-core-group-layout-6.wp-container-core-group-layout-6{gap:0.5ch;}.wp-container-core-column-layout-1.wp-container-core-column-layout-1 > *{margin-block-start:0;margin-block-end:0;}.wp-container-core-column-layout-1.wp-container-core-column-layout-1.wp-container-core-column-layout-1.wp-container-core-column-layout-1 > * + *{margin-block-start:0px;margin-block-end:0;}.wp-container-core-group-layout-7.wp-container-core-group-layout-7{gap:0.5ch;flex-direction:column;align-items:flex-start;}.wp-container-core-column-layout-2.wp-container-core-column-layout-2 > *{margin-block-start:0;margin-block-end:0;}.wp-container-core-column-layout-2.wp-container-core-column-layout-2.wp-container-core-column-layout-2.wp-container-core-column-layout-2 > * + *{margin-block-start:0px;margin-block-end:0;}.wp-container-core-columns-layout-1.wp-container-core-columns-layout-1{flex-wrap:nowrap;gap:var(--wp--preset--spacing--30);}.wp-container-core-group-layout-11.wp-container-core-group-layout-11{justify-content:space-between;}
+  </style>
+  <style id="wp-block-template-skip-link-inline-css">
+   .skip-link.screen-reader-text {
+			border: 0;
+			clip: rect(1px,1px,1px,1px);
+			clip-path: inset(50%);
+			height: 1px;
+			margin: -1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute !important;
+			width: 1px;
+			word-wrap: normal !important;
+		}
+
+		.skip-link.screen-reader-text:focus {
+			background-color: #eee;
+			clip: auto !important;
+			clip-path: none;
+			color: #444;
+			display: block;
+			font-size: 1em;
+			height: auto;
+			left: 5px;
+			line-height: normal;
+			padding: 15px 23px 14px;
+			text-decoration: none;
+			top: 5px;
+			width: auto;
+			z-index: 100000;
+		}
+  </style>
+  <link href="https://madsblog.net/wp-content/plugins/simple-embed-code/css/video-container.min.css?ver=2.3.8" id="ce_responsive-css" media="all" rel="stylesheet"/>
+  <link href="https://madsblog.net/wp-content/plugins/easy-table-of-contents/assets/css/screen.min.css?ver=2.0.58" id="ez-toc-css" media="all" rel="stylesheet"/>
+  <style id="ez-toc-inline-css">
+   div#ez-toc-container .ez-toc-title {font-size: 120%;}div#ez-toc-container .ez-toc-title {font-weight: 500;}div#ez-toc-container ul li {font-size: 95%;}div#ez-toc-container nav ul ul li ul li {font-size: 90%!important;}
+.ez-toc-container-direction {direction: ltr;}.ez-toc-counter ul{counter-reset: item ;}.ez-toc-counter nav ul li a::before {content: counters(item, ".", decimal) ". ";display: inline-block;counter-increment: item;flex-grow: 0;flex-shrink: 0;margin-right: .2em; float: left; }.ez-toc-widget-direction {direction: ltr;}.ez-toc-widget-container ul{counter-reset: item ;}.ez-toc-widget-container nav ul li a::before {content: counters(item, ".", decimal) ". ";display: inline-block;counter-increment: item;flex-grow: 0;flex-shrink: 0;margin-right: .2em; float: left; }
+  </style>
+  <link href="https://madsblog.net/wp-content/plugins/easy-table-of-contents/assets/css/ez-toc-sticky.min.css?ver=2.0.58" id="ez-toc-sticky-css" media="all" rel="stylesheet"/>
+  <style id="ez-toc-sticky-inline-css">
+   .ez-toc-sticky-toggle-direction {direction: ltr;}.ez-toc-sticky-toggle-counter ul{counter-reset: item ;}.ez-toc-sticky-toggle-counter nav ul li a::before {content: counters(item, ".", decimal) ". ";display: inline-block;counter-increment: item;flex-grow: 0;flex-shrink: 0;margin-right: .2em; float: left; }
+.ez-toc-sticky-fixed{position: fixed;top: 0;left: 0;z-index: 999999;width: auto;max-width: 100%;} .ez-toc-sticky-fixed .ez-toc-sidebar {position: relative;top: auto;width: auto !important;height: 100%;box-shadow: 1px 1px 10px 3px rgb(0 0 0 / 20%);box-sizing: border-box;padding: 20px 30px;background: #fff;margin-left: 0 !important;height: auto; max-height: 100vh; overflow-y: auto;overflow-x: hidden;} .ez-toc-sticky-fixed .ez-toc-sidebar #ez-toc-sticky-container { max-width: auto;;padding: 0px;border: none;margin-bottom: 0;margin-top: 65px;} #ez-toc-sticky-container a { color: #000;} .ez-toc-sticky-fixed .ez-toc-sidebar .ez-toc-sticky-title-container {border-bottom-color: #EEEEEE;background-color: #fff;padding:15px;border-bottom: 1px solid #e5e5e5;width: 100%;position: absolute;height: auto;top: 0;left: 0;z-index: 99999999;} .ez-toc-sticky-fixed .ez-toc-sidebar .ez-toc-sticky-title-container .ez-toc-sticky-title {font-weight: 600;font-size: 18px;color: #111;} .ez-toc-sticky-fixed .ez-toc-close-icon {-webkit-appearance: none;padding: 0;cursor: pointer;background: 0 0;border: 0;float: right;font-size: 30px;font-weight: 600;line-height: 1;position: relative;color: #111;top: -2px;text-decoration: none;} .ez-toc-open-icon {position: fixed;left: 0px;top:75%;text-decoration: none;font-weight: bold;padding: 5px 10px 15px 10px;box-shadow: 1px -5px 10px 5px rgb(0 0 0 / 10%);background-color: #fff;color:#111;display: inline-grid;line-height: 1.4;border-radius: 0px 10px 10px 0px;z-index: 999999;} .ez-toc-sticky-fixed.hide {-webkit-transition: opacity 0.3s linear, left 0.3s cubic-bezier(0.4, 0, 1, 1);-ms-transition: opacity 0.3s linear, left 0.3s cubic-bezier(0.4, 0, 1, 1);-o-transition: opacity 0.3s linear, left 0.3s cubic-bezier(0.4, 0, 1, 1);transition: opacity 0.3s linear, left 0.3s cubic-bezier(0.4, 0, 1, 1);left: -100%;} .ez-toc-sticky-fixed.show {-webkit-transition: left 0.3s linear, left 0.3s easy-out;-moz-transition: left 0.3s linear;-o-transition: left 0.3s linear;transition: left 0.3s linear;left: 0;} .ez-toc-open-icon span.arrow { font-size: 18px; } .ez-toc-open-icon span.text {font-size: 13px;writing-mode: vertical-rl;text-orientation: mixed;} @media screen  and (max-device-width: 640px) {.ez-toc-sticky-fixed .ez-toc-sidebar {min-width: auto;} .ez-toc-sticky-fixed .ez-toc-sidebar.show { padding-top: 35px; } .ez-toc-sticky-fixed .ez-toc-sidebar #ez-toc-sticky-container { min-width: 100%; } }
+  </style>
+  <link href="https://madsblog.net/wp-includes/css/dashicons.min.css?ver=6.4.1" id="dashicons-css" media="all" rel="stylesheet"/>
+  <link href="https://madsblog.net/wp-content/plugins/add-to-any/addtoany.min.css?ver=1.16" id="addtoany-css" media="all" rel="stylesheet"/>
+  <script data-wp-strategy="defer" defer="" id="wp-interactivity-js" src="https://madsblog.net/wp-includes/js/dist/interactivity.min.js?ver=6.4.1">
+  </script>
+  <script data-wp-strategy="defer" defer="" id="wp-block-navigation-view-js" src="https://madsblog.net/wp-includes/blocks/navigation/view.min.js?ver=e3d6f3216904b5b42831">
+  </script>
+  <script id="addtoany-core-js-before">
+   window.a2a_config=window.a2a_config||{};a2a_config.callbacks=[];a2a_config.overlays=[];a2a_config.templates={};
+  </script>
+  <script async="" id="addtoany-core-js" src="https://static.addtoany.com/menu/page.js">
+  </script>
+  <script id="jquery-core-js" src="https://madsblog.net/wp-includes/js/jquery/jquery.min.js?ver=3.7.1">
+  </script>
+  <script id="jquery-migrate-js" src="https://madsblog.net/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1">
+  </script>
+  <script async="" id="addtoany-jquery-js" src="https://madsblog.net/wp-content/plugins/add-to-any/addtoany.min.js?ver=1.1">
+  </script>
+  <style id="wp-fonts-local">
+   @font-face{font-family:"DM Sans";font-style:normal;font-weight:400;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/dm-sans/DMSans-Regular.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"DM Sans";font-style:italic;font-weight:400;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/dm-sans/DMSans-Regular-Italic.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"DM Sans";font-style:normal;font-weight:700;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/dm-sans/DMSans-Bold.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"DM Sans";font-style:italic;font-weight:700;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/dm-sans/DMSans-Bold-Italic.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:300;font-display:block;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/ibm-plex-mono/IBMPlexMono-Light.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:block;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"IBM Plex Mono";font-style:italic;font-weight:400;font-display:block;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/ibm-plex-mono/IBMPlexMono-Italic.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:700;font-display:block;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/ibm-plex-mono/IBMPlexMono-Bold.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:Inter;font-style:normal;font-weight:200 900;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/inter/Inter-VariableFont_slnt,wght.ttf') format('truetype');font-stretch:normal;}
+@font-face{font-family:"Source Serif Pro";font-style:normal;font-weight:200 900;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/source-serif-pro/SourceSerif4Variable-Roman.ttf.woff2') format('woff2');font-stretch:normal;}
+@font-face{font-family:"Source Serif Pro";font-style:italic;font-weight:200 900;font-display:fallback;src:url('https://madsblog.net/wp-content/themes/twentytwentythree/assets/fonts/source-serif-pro/SourceSerif4Variable-Italic.ttf.woff2') format('woff2');font-stretch:normal;}
+  </style>
+  <link href="https://madsblog.net/wp-content/uploads/2023/11/DALL_E_2023-11-23_12.13.51_-_Create_a_simplistic_and_recognizable_cloud_icon_suitable_for_use_as_a_favicon_in_a_browser._The_icon_should_be_inspired_by_the_provided_image__with_a_-removebg-preview-1-150x150.png" rel="icon" sizes="32x32"/>
+  <link href="https://madsblog.net/wp-content/uploads/2023/11/DALL_E_2023-11-23_12.13.51_-_Create_a_simplistic_and_recognizable_cloud_icon_suitable_for_use_as_a_favicon_in_a_browser._The_icon_should_be_inspired_by_the_provided_image__with_a_-removebg-preview-1.png" rel="icon" sizes="192x192"/>
+  <link href="https://madsblog.net/wp-content/uploads/2023/11/DALL_E_2023-11-23_12.13.51_-_Create_a_simplistic_and_recognizable_cloud_icon_suitable_for_use_as_a_favicon_in_a_browser._The_icon_should_be_inspired_by_the_provided_image__with_a_-removebg-preview-1.png" rel="apple-touch-icon"/>
+  <meta content="https://madsblog.net/wp-content/uploads/2023/11/DALL_E_2023-11-23_12.13.51_-_Create_a_simplistic_and_recognizable_cloud_icon_suitable_for_use_as_a_favicon_in_a_browser._The_icon_should_be_inspired_by_the_provided_image__with_a_-removebg-preview-1.png" name="msapplication-TileImage"/>
+  <style type="text/css">
+   /** Mega Menu CSS: fs **/
+  </style>
+ </head>
+ <body class="post-template-default single single-post postid-1109 single-format-standard wp-embed-responsive">
+  <div class="wp-site-blocks">
+   <header class="wp-block-template-part">
+    <p>
+    </p>
+    <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
+     <div class="wp-block-group alignfull is-vertical is-content-justification-center is-layout-flex wp-container-core-group-layout-1 wp-block-group-is-layout-flex" style="padding-bottom:var(--wp--preset--spacing--40)">
+      <figure class="wp-block-image aligncenter size-large is-style-rounded">
+       <a href="https://madsblog.net/">
+        <img alt="" class="wp-image-1079" decoding="async" fetchpriority="high" height="276" sizes="(max-width: 1024px) 100vw, 1024px" src="https://madsblog.net/wp-content/uploads/2023/11/1-3-1024x276.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/1-3-1024x276.png 1024w, https://madsblog.net/wp-content/uploads/2023/11/1-3-300x81.png 300w, https://madsblog.net/wp-content/uploads/2023/11/1-3-768x207.png 768w, https://madsblog.net/wp-content/uploads/2023/11/1-3-1536x414.png 1536w, https://madsblog.net/wp-content/uploads/2023/11/1-3.png 1640w" width="1024"/>
+       </a>
+      </figure>
+      <nav aria-label="Menu 1" class="is-responsive items-justified-right wp-block-navigation is-content-justification-right is-layout-flex wp-container-core-navigation-layout-1 wp-block-navigation-is-layout-flex" data-wp-context='{"core":{"navigation":{"overlayOpenedBy":[],"type":"overlay","roleAttribute":"","ariaLabel":"Menu"}}}' data-wp-interactive="">
+       <button aria-haspopup="true" aria-label="Open menu" class="wp-block-navigation__responsive-container-open" data-wp-on--click="actions.core.navigation.openMenuOnClick" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown">
+        <svg aria-hidden="true" focusable="false" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+         <rect height="1.5" width="16" x="4" y="7.5">
+         </rect>
+         <rect height="1.5" width="16" x="4" y="15">
+         </rect>
+        </svg>
+       </button>
+       <div class="wp-block-navigation__responsive-container" data-wp-class--has-modal-open="selectors.core.navigation.isMenuOpen" data-wp-class--is-menu-open="selectors.core.navigation.isMenuOpen" data-wp-effect="effects.core.navigation.initMenu" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" id="modal-1" style="" tabindex="-1">
+        <div class="wp-block-navigation__responsive-close" tabindex="-1">
+         <div class="wp-block-navigation__responsive-dialog" data-wp-bind--aria-label="selectors.core.navigation.ariaLabel" data-wp-bind--aria-modal="selectors.core.navigation.ariaModal" data-wp-bind--role="selectors.core.navigation.roleAttribute" data-wp-effect="effects.core.navigation.focusFirstElement">
+          <button aria-label="Close menu" class="wp-block-navigation__responsive-container-close" data-wp-on--click="actions.core.navigation.closeMenuOnClick">
+           <svg aria-hidden="true" focusable="false" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 11.8l6.1-6.3-1-1-6.1 6.2-6.1-6.2-1 1 6.1 6.3-6.5 6.7 1 1 6.5-6.6 6.5 6.6 1-1z">
+            </path>
+           </svg>
+          </button>
+          <div class="wp-block-navigation__responsive-container-content" id="modal-1-content">
+           <ul class="wp-block-navigation__container is-responsive items-justified-right wp-block-navigation">
+            <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/" title="">
+              <strong>
+               Azure
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="Azure submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/aks/">
+                <span class="wp-block-navigation-item__label">
+                 AKS
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/app-gateway/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Application Gateway
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/azure-ad-connect-azure/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Azure AD Connect
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/multi-factor-authentication-mfa/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Multi Factor Authentication (MFA)
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/adls-gen2/">
+                <span class="wp-block-navigation-item__label">
+                 Data Lake Gen2
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/azure/automation/">
+                <span class="wp-block-navigation-item__label">
+                 Automation
+                </span>
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/" title="">
+              <strong>
+               GCP
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="GCP submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/gcloud">
+                <span class="wp-block-navigation-item__label">
+                 gcloud
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/cloud-run">
+                <span class="wp-block-navigation-item__label">
+                 Cloud Run
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/cloud-build">
+                <span class="wp-block-navigation-item__label">
+                 Cloud Build
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/http-load-balancer">
+                <span class="wp-block-navigation-item__label">
+                 HTTP Load Balancer
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/gke/">
+                <span class="wp-block-navigation-item__label">
+                 GKE
+                </span>
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/" title="">
+              <strong>
+               DevOps Tools
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="DevOps Tools submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/github/" title="">
+                <span class="wp-block-navigation-item__label">
+                 GitHub
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/terraform/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Terraform
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/kubernetes/">
+                <span class="wp-block-navigation-item__label">
+                 Kubernetes
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/devops-tools/argocd/">
+                <span class="wp-block-navigation-item__label">
+                 ArgoCD
+                </span>
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item has-child open-on-hover-click wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/automation/">
+              <strong>
+               Automation
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="Automation submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/google-cloud-platform/bash">
+                <span class="wp-block-navigation-item__label">
+                 Bash
+                </span>
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/" title="">
+              <strong>
+               Windows/linux
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="Windows/linux submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/ubuntu">
+                <span class="wp-block-navigation-item__label">
+                 Ubuntu
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/active-directory/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Active Directory
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/file-and-storage-services/" title="">
+                <span class="wp-block-navigation-item__label">
+                 File and Storage Services
+                </span>
+                <span class="wp-block-navigation-item__description">
+                 Artículos – File and Storage Services
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/hyper-v/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Hyper-v
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/servercore/" title="">
+                <span class="wp-block-navigation-item__label">
+                 ServerCore
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/articulos/server-manager/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Server Manager
+                </span>
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/microsoft-365/" title="">
+              <strong>
+               Microsoft 365
+              </strong>
+             </a>
+             <button aria-expanded="false" aria-label="Microsoft 365 submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+              <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+               </path>
+              </svg>
+             </button>
+             <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+              <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/microsoft-365/azure-ad-connect-365/" title="">
+                <span class="wp-block-navigation-item__label">
+                 Azure AD Connect
+                </span>
+               </a>
+              </li>
+              <li class="wp-block-navigation-item has-child open-on-hover-click menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-context='{ "core": { "navigation": { "submenuOpenedBy": {}, "type": "submenu" } } }' data-wp-effect="effects.core.navigation.initMenu" data-wp-interactive="" data-wp-on--focusout="actions.core.navigation.handleMenuFocusout" data-wp-on--keydown="actions.core.navigation.handleMenuKeydown" data-wp-on--mouseenter="actions.core.navigation.openMenuOnHover" data-wp-on--mouseleave="actions.core.navigation.closeMenuOnHover" tabindex="-1">
+               <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/exchange-server/" title="">
+                Exchange Server
+               </a>
+               <button aria-expanded="false" aria-label="Exchange Server submenu" class="wp-block-navigation__submenu-icon wp-block-navigation-submenu__toggle" data-wp-bind--aria-expanded="selectors.core.navigation.isMenuOpen" data-wp-on--click="actions.core.navigation.toggleMenuOnClick">
+                <svg aria-hidden="true" fill="none" focusable="false" height="12" viewbox="0 0 12 12" width="12" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M1.50002 4L6.00002 8L10.5 4" stroke-width="1.5">
+                 </path>
+                </svg>
+               </button>
+               <ul class="wp-block-navigation__submenu-container menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-submenu" data-wp-on--focus="actions.core.navigation.openMenuOnFocus">
+                <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+                 <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/exchange-server/exchange-online/" title="">
+                  <span class="wp-block-navigation-item__label">
+                   Exchange Online
+                  </span>
+                 </a>
+                </li>
+                <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+                 <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/exchange-server/ex-2010/" title="">
+                  <span class="wp-block-navigation-item__label">
+                   Exchange Server
+                  </span>
+                 </a>
+                </li>
+               </ul>
+              </li>
+             </ul>
+            </li>
+            <li class="wp-block-navigation-item menu-item menu-item-type-taxonomy menu-item-object-category wp-block-navigation-link">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/category/noticias/" title="">
+              <span class="wp-block-navigation-item__label">
+               <strong>
+                Noticias
+               </strong>
+              </span>
+             </a>
+            </li>
+            <li class="wp-block-navigation-item menu-item menu-item-type-post_type menu-item-object-page wp-block-navigation-link">
+             <a class="wp-block-navigation-item__content" href="https://madsblog.net/480-2/" title="">
+              <span class="wp-block-navigation-item__label">
+               <strong>
+                Sobre mi
+               </strong>
+              </span>
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
+      </nav>
+     </div>
+    </div>
+   </header>
+   <main class="wp-block-group is-layout-flow wp-block-group-is-layout-flow" style="margin-top:var(--wp--preset--spacing--50)">
+    <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
+     <h1 class="has-text-align-center alignwide wp-block-post-title" style="margin-bottom:var(--wp--preset--spacing--40);">
+      Storage Persistente en GKE
+     </h1>
+    </div>
+    <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
+     <div class="entry-content alignwide wp-block-post-content has-global-padding is-layout-constrained wp-block-post-content-is-layout-constrained">
+      <figure class="wp-block-image size-full">
+       <img alt="" class="wp-image-1127" decoding="async" height="341" sizes="(max-width: 679px) 100vw, 679px" src="https://madsblog.net/wp-content/uploads/2023/11/image-65.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-65.png 679w, https://madsblog.net/wp-content/uploads/2023/11/image-65-300x151.png 300w" width="679"/>
+      </figure>
+      <p>
+       Kubernetes se ha establecido como la herramienta predilecta para desplegar, escalar y gestionar aplicaciones en la nube. Una de las principales razones es su robustez y flexibilidad es su sistema de manejo de volúmenes, diseñado para abordar uno de los desafíos más grandes en la contenerización: la persistencia de datos.
+      </p>
+      <p>
+       En este caso estaremos realizando una introducción sobre Volumenes efimeros y persistentes en GKE.
+      </p>
+      <div class="ez-toc-v2_0_58 ez-toc-wrap-left counter-hierarchy ez-toc-counter ez-toc-black ez-toc-container-direction" id="ez-toc-container">
+       <div class="ez-toc-title-container">
+        <p class="ez-toc-title">
+         Table of Contents
+        </p>
+        <span class="ez-toc-title-toggle">
+         <a aria-label="Toggle Table of Content" class="ez-toc-pull-right ez-toc-btn ez-toc-btn-xs ez-toc-btn-default ez-toc-toggle" href="#" role="button">
+          <label for="item-6573ce526dfc4">
+           <span class="">
+            <span class="eztoc-hide" style="display:none;">
+             Toggle
+            </span>
+            <span class="ez-toc-icon-toggle-span">
+             <svg class="list-377408" fill="none" height="20px" style="fill: #999;color:#999" viewbox="0 0 24 24" width="20px" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 6H4v2h2V6zm14 0H8v2h12V6zM4 11h2v2H4v-2zm16 0H8v2h12v-2zM4 16h2v2H4v-2zm16 0H8v2h12v-2z" fill="currentColor">
+              </path>
+             </svg>
+             <svg baseprofile="tiny" class="arrow-unsorted-368013" height="10px" style="fill: #999;color:#999" version="1.2" viewbox="0 0 24 24" width="10px" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18.2 9.3l-6.2-6.3-6.2 6.3c-.2.2-.3.4-.3.7s.1.5.3.7c.2.2.4.3.7.3h11c.3 0 .5-.1.7-.3.2-.2.3-.5.3-.7s-.1-.5-.3-.7zM5.8 14.7l6.2 6.3 6.2-6.3c.2-.2.3-.5.3-.7s-.1-.5-.3-.7c-.2-.2-.4-.3-.7-.3h-11c-.3 0-.5.1-.7.3-.2.2-.3.5-.3.7s.1.5.3.7z">
+              </path>
+             </svg>
+            </span>
+           </span>
+          </label>
+          <input aria-label="item-6573ce526dfc4" id="item-6573ce526dfc4" type="checkbox"/>
+         </a>
+        </span>
+       </div>
+       <nav>
+        <ul class="ez-toc-list ez-toc-list-level-1">
+         <li class="ez-toc-page-1 ez-toc-heading-level-1">
+          <a class="ez-toc-link ez-toc-heading-1" href="#Tipos_de_Volumenes" title="Tipos de Volumenes">
+           Tipos de Volumenes
+          </a>
+          <ul class="ez-toc-list-level-2">
+           <li class="ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-2" href="#Volumenes_efimeros" title="Volumenes efímeros:">
+             Volumenes efímeros:
+            </a>
+           </li>
+           <li class="ez-toc-page-1 ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-3" href="#Volumenes_Persistentes" title="Volumenes Persistentes:">
+             Volumenes Persistentes:
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="ez-toc-page-1 ez-toc-heading-level-1">
+          <a class="ez-toc-link ez-toc-heading-4" href="#%C2%BFQue_es_un_StatefulSet" title="¿Que es un StatefulSet?">
+           ¿Que es un StatefulSet?
+          </a>
+         </li>
+         <li class="ez-toc-page-1 ez-toc-heading-level-1">
+          <a class="ez-toc-link ez-toc-heading-5" href="#Laboratorio_probando_PersistentVolumes_en_GKE" title="Laboratorio: probando PersistentVolumes en GKE">
+           Laboratorio: probando PersistentVolumes en GKE
+          </a>
+          <ul class="ez-toc-list-level-2">
+           <li class="ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-6" href="#Conectarse_al_cluster" title="Conectarse al cluster">
+             Conectarse al cluster
+            </a>
+           </li>
+           <li class="ez-toc-page-1 ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-7" href="#Crear_PVC" title="Crear PVC">
+             Crear PVC
+            </a>
+           </li>
+           <li class="ez-toc-page-1 ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-8" href="#Crear_Pod" title="Crear Pod">
+             Crear Pod
+            </a>
+           </li>
+           <li class="ez-toc-page-1 ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-9" href="#Prueba_de_Persistencia" title="Prueba de Persistencia">
+             Prueba de Persistencia
+            </a>
+           </li>
+           <li class="ez-toc-page-1 ez-toc-heading-level-2">
+            <a class="ez-toc-link ez-toc-heading-10" href="#Crear_StatefulSet" title="Crear StatefulSet">
+             Crear StatefulSet
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </nav>
+      </div>
+      <h1 class="wp-block-heading">
+       <span class="ez-toc-section" id="Tipos_de_Volumenes">
+       </span>
+       Tipos de Volumenes
+       <span class="ez-toc-section-end">
+       </span>
+      </h1>
+      <p>
+       En este caso los vamos a estar clasificando en 2 tipos Efimeros y Persistentes.
+      </p>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Volumenes_efimeros">
+       </span>
+       Volumenes efímeros:
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Este tipo de Volumen se asignan a nivel de pods y dependen del ciclo de vida de los pods. Se utilizan cuando los datos o la informacion no deben ser mantenidos a lo largo del tiempo (es decir que no debe ser presistente).
+      </p>
+      <p>
+       Con este tipo de volumenes, cuando el ciclo de vida del pod finalice, tambien finalizará la de los datos. Los volumenes no mantendran una persistencia de datos.
+      </p>
+      <p>
+       Algunos ejemplos:
+      </p>
+      <ul>
+       <li>
+        emptyDir:
+        <ul>
+         <li>
+          Cuando un pod storage se define este tipo de volume, se crea cuando el pod es asignado a un nodo del cluster.
+         </li>
+         <li>
+          Se asigna (como indica el nombre) un directorio vacío.
+         </li>
+         <li>
+          Es compartido para todos los Contendores dentro del pod.
+         </li>
+         <li>
+          Cuando el ciclo de vida del pod finaliza. Tambien finaliza la del emptyDir volume y sus datos son eliminados.
+         </li>
+         <li>
+          Cuando un contenedor Crashea los datos no son eliminados.
+         </li>
+         <li>
+          Algunos usos posibles:
+          <ul>
+           <li>
+            <strong>
+             Espacio de trabajo temporal
+            </strong>
+            (
+            <strong>
+             scratch space)
+            </strong>
+            .
+           </li>
+           <li>
+            <strong>
+             Guardar puntos de control en cálculos largos para recuperarse de fallos
+            </strong>
+            .
+           </li>
+           <li>
+            <strong>
+             Mantener archivos que un contenedor de Content-Manager obtiene mientras un contenedor de servidor web proporciona los datos
+            </strong>
+            .
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <p>
+       Ephemerals con propositos particulares:
+      </p>
+      <ul>
+       <li>
+        ConfigMaps:
+        <ul>
+         <li>
+          Es una forma de inyectar datos de configuración en los pods.
+         </li>
+         <li>
+          Se referencia dentro de las especificaciones del pod.
+         </li>
+        </ul>
+       </li>
+       <li>
+        Secrets:
+        <ul>
+         <li>
+          Se utiliza para pasar a los pods información sensible de manear segura como passwords.
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Volumenes_Persistentes">
+       </span>
+       Volumenes Persistentes:
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <ul>
+       <li>
+        Son independientes.
+       </li>
+       <li>
+        No dependen del ciclo de vida de los Pods.
+       </li>
+       <li>
+        Pueden ser PersistenVolumes o PersistentVolumesClaim.
+       </li>
+      </ul>
+      <p>
+       Los tipos que estaremos viendo hoy:
+      </p>
+      <ul>
+       <li>
+        <strong>
+         PersistenVolume (PV):
+        </strong>
+        <ul>
+         <li>
+          Es la declaración del storage persistente presentado en el cluster. Se provisiona utilizando Storage Classes. Tienen una vida independiente a la de los pods.
+         </li>
+         <li>
+          El tipo de Storage es definido por las StorageClasses.
+         </li>
+        </ul>
+       </li>
+       <li>
+        <strong>
+         PersistentVolumeClaim (PVC):
+        </strong>
+        <ul>
+         <li>
+          Es el solicitante configurado a nivel del pod para consumir el PV.
+         </li>
+         <li>
+          El request puede especificar niveles especificos de recursos, size y modelos de acceso.
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <h1 class="wp-block-heading">
+       <span class="ez-toc-section" id="%C2%BFQue_es_un_StatefulSet">
+       </span>
+       ¿Que es un StatefulSet?
+       <span class="ez-toc-section-end">
+       </span>
+      </h1>
+      <p>
+      </p>
+      <p>
+       Es un tipo de objeto declarativo de K8s que se utiliza para gestionar aplicaciones con estado persistente.
+      </p>
+      <p>
+       Gestiona la implementación y escalamiento de un set de Pods y provee garantias sobre el ordeniamiento y uniqueness de cada Pod.
+      </p>
+      <p>
+       La diferencia con los deployments es que se maneja una identidad para cada pod. Se crean con las mismas especificaciones pero no son intercambiables. Se setean identificadores persistentes que se mantienen durante los reschedules.
+      </p>
+      <p>
+       Se utilizan para apps que requieran:
+      </p>
+      <ul>
+       <li>
+        Identificadores de Red unicos.
+       </li>
+       <li>
+        Storage Persistente y estable.
+       </li>
+       <li>
+        Implementación y escalamiento unico y de manera ordenada.
+       </li>
+       <li>
+        Rolling Updates automaticos.
+       </li>
+      </ul>
+      <h1 class="wp-block-heading">
+       <span class="ez-toc-section" id="Laboratorio_probando_PersistentVolumes_en_GKE">
+       </span>
+       Laboratorio: probando PersistentVolumes en GKE
+       <span class="ez-toc-section-end">
+       </span>
+      </h1>
+      <p>
+       Vamos a arrancar con el lab!
+      </p>
+      <p>
+       Primero, podemos corroborar que tenemos un GKE Standard Cluster desplegado en nuestro ambiente de laboratorio de GCP:
+      </p>
+      <figure class="wp-block-image size-large is-resized">
+       <img alt="" class="wp-image-1110" decoding="async" height="359" sizes="(max-width: 1024px) 100vw, 1024px" src="https://madsblog.net/wp-content/uploads/2023/11/image-48-1024x359.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-48-1024x359.png 1024w, https://madsblog.net/wp-content/uploads/2023/11/image-48-300x105.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-48-768x269.png 768w, https://madsblog.net/wp-content/uploads/2023/11/image-48.png 1086w" style="width:640px;height:auto" width="1024"/>
+      </figure>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Conectarse_al_cluster">
+       </span>
+       Conectarse al cluster
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Como siempre debemos hacer en Cloud Shell o Gcloud, utilizaremos las Enviroment Variables para guardar la zona y el nombre del Cluster de GKE:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="export my_zone=us-central1-a
+export my_cluster=standard-cluster-1" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #81A1C1">export</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">my_zone</span><span style="color: #81A1C1">=</span><span style="color: #D8DEE9">us</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">central1</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">a</span></span>
+<span class="line"><span style="color: #81A1C1">export</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">my_cluster</span><span style="color: #81A1C1">=</span><span style="color: #D8DEE9">standard</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">cluster</span><span style="color: #81A1C1">-</span><span style="color: #B48EAD">1</span></span></code></pre>
+      </div>
+      <p>
+       Luego, vamos a setear el autocompletado de Kubectl en cloud shell:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="source &lt;(kubectl completion bash)" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">source</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">&lt;</span><span style="color: #D8DEE9FF">(</span><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">completion</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">bash</span><span style="color: #D8DEE9FF">)</span></span></code></pre>
+      </div>
+      <p>
+       Ahora, nos vamos a conectar a nuestro cluster utilizando el siguiente comando:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="gcloud container clusters get-credentials $my_cluster --zone $my_zone" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">gcloud</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">container</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">clusters</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">get</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">credentials</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">$my_cluster</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">--</span><span style="color: #D8DEE9">zone</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">$my_zone</span></span></code></pre>
+      </div>
+      <p>
+       Este es el output que debería generarse:
+      </p>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1111" decoding="async" height="193" loading="lazy" sizes="(max-width: 1002px) 100vw, 1002px" src="https://madsblog.net/wp-content/uploads/2023/11/image-49.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-49.png 1002w, https://madsblog.net/wp-content/uploads/2023/11/image-49-300x58.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-49-768x148.png 768w" width="1002"/>
+      </figure>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Crear_PVC">
+       </span>
+       Crear PVC
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Ahora utilizaremos el siguiente yaml file para declarar nuestro PersistenVolumeClaim:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hello-web-disk
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Gi" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9FF">apiVersion</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">v1</span></span>
+<span class="line"><span style="color: #D8DEE9FF">kind</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">PersistentVolumeClaim</span></span>
+<span class="line"><span style="color: #D8DEE9FF">metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">hello</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">web</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">disk</span></span>
+<span class="line"><span style="color: #D8DEE9FF">spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  accessModes</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">ReadWriteOnce</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  resources</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    requests</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      storage</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> 30</span><span style="color: #D8DEE9">Gi</span></span></code></pre>
+      </div>
+      <p>
+       Como veremos en la siguiente imagen el PVC es creado en K8s:
+      </p>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1114" decoding="async" height="58" loading="lazy" sizes="(max-width: 861px) 100vw, 861px" src="https://madsblog.net/wp-content/uploads/2023/11/image-52.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-52.png 861w, https://madsblog.net/wp-content/uploads/2023/11/image-52-300x20.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-52-768x52.png 768w" width="861"/>
+      </figure>
+      <p>
+       Podremos verificar el correcto despliegue utilizando el siguiente comando:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl get persistentvolumeclaim" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">get</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">persistentvolumeclaim</span></span></code></pre>
+      </div>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Crear_Pod">
+       </span>
+       Crear Pod
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Ahora crearemos un Pod para poder montar el PV utiilzando el PVC. Declaración del Pod:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code='kind: Pod
+apiVersion: v1
+metadata:
+  name: pvc-demo-pod
+spec:
+  containers:
+    - name: frontend
+      image: nginx
+      volumeMounts:
+      - mountPath: "/var/www/html"
+        name: pvc-demo-volume
+  volumes:
+    - name: pvc-demo-volume
+      persistentVolumeClaim:
+        claimName: hello-web-disk' role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9FF">kind</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">Pod</span></span>
+<span class="line"><span style="color: #D8DEE9FF">apiVersion</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">v1</span></span>
+<span class="line"><span style="color: #D8DEE9FF">metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pvc</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">pod</span></span>
+<span class="line"><span style="color: #D8DEE9FF">spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  containers</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">frontend</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      image</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">nginx</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      volumeMounts</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> mountPath</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #ECEFF4">"</span><span style="color: #A3BE8C">/var/www/html</span><span style="color: #ECEFF4">"</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pvc</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">volume</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  volumes</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pvc</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">volume</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      persistentVolumeClaim</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        claimName</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">hello</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">web</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">disk</span></span></code></pre>
+      </div>
+      <p>
+       Como podemos ver se declara el PVC en
+      </p>
+      <ul>
+       <li>
+        <strong>
+         <em>
+          specs.containers.frontend.mountPath
+         </em>
+        </strong>
+        : donde referenciamos el path de mount y el PVC.
+       </li>
+       <li>
+        <strong>
+         <em>
+          specs.volumes
+         </em>
+        </strong>
+        : aquí declaramos el volumenb referenciando al PVC creado en el paso anterior.
+       </li>
+      </ul>
+      <p>
+       Para desplegarlo utilizaremos el siguiente comando:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl apply -f nginx-fronted.yaml" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">apply</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">f</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">nginx</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">fronted</span><span style="color: #ECEFF4">.</span><span style="color: #D8DEE9">yaml</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image alignwide size-large">
+       <img alt="" class="wp-image-1117" decoding="async" height="58" loading="lazy" sizes="(max-width: 1024px) 100vw, 1024px" src="https://madsblog.net/wp-content/uploads/2023/11/image-55-1024x58.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-55-1024x58.png 1024w, https://madsblog.net/wp-content/uploads/2023/11/image-55-300x17.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-55-768x44.png 768w, https://madsblog.net/wp-content/uploads/2023/11/image-55.png 1138w" width="1024"/>
+      </figure>
+      <p>
+       Podemos ver los pods desplegados
+      </p>
+      <figure class="wp-block-image size-full">
+       <img alt="" class="wp-image-1122" decoding="async" height="138" loading="lazy" sizes="(max-width: 624px) 100vw, 624px" src="https://madsblog.net/wp-content/uploads/2023/11/image-60.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-60.png 624w, https://madsblog.net/wp-content/uploads/2023/11/image-60-300x66.png 300w" width="624"/>
+      </figure>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Prueba_de_Persistencia">
+       </span>
+       Prueba de Persistencia
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Realizaremos una pequeña prueba de persistencia.
+      </p>
+      <p>
+       Primero, ingresaremos al bash del pod creado utilizando el siguiente comando:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl exec -it pvc-demo-pod -- sh" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">exec</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">it</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pvc</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">pod</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">--</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">sh</span></span></code></pre>
+      </div>
+      <p>
+       Luego crearemos un archivo html en nuestro mountPath:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="echo Test webpage in a persistent volume!&gt;/var/www/html/index.html
+chmod +x /var/www/html/index.html" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">echo</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">Test</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">webpage</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">in</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">a</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">persistent</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">volume</span><span style="color: #81A1C1">!&gt;/var</span><span style="color: #D8DEE9FF">/</span><span style="color: #D8DEE9">www</span><span style="color: #D8DEE9FF">/html/index.html</span></span>
+<span class="line"><span style="color: #D8DEE9">chmod</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">+</span><span style="color: #D8DEE9">x</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">/var</span><span style="color: #D8DEE9FF">/</span><span style="color: #D8DEE9">www</span><span style="color: #D8DEE9FF">/html/index.html</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1118" decoding="async" height="93" loading="lazy" sizes="(max-width: 989px) 100vw, 989px" src="https://madsblog.net/wp-content/uploads/2023/11/image-56.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-56.png 989w, https://madsblog.net/wp-content/uploads/2023/11/image-56-300x28.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-56-768x72.png 768w" width="989"/>
+      </figure>
+      <p>
+       Ahora eliminaremos el pod:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl delete pod pvc-demo-pod" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">delete</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pod</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">pvc</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">pod</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1120" decoding="async" height="97" loading="lazy" sizes="(max-width: 989px) 100vw, 989px" src="https://madsblog.net/wp-content/uploads/2023/11/image-58.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-58.png 989w, https://madsblog.net/wp-content/uploads/2023/11/image-58-300x29.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-58-768x75.png 768w" width="989"/>
+      </figure>
+      <p>
+       Verificamos la existencia del PVC:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl get persistentvolumeclaim" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">get</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">persistentvolumeclaim</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1121" decoding="async" height="117" loading="lazy" sizes="(max-width: 773px) 100vw, 773px" src="https://madsblog.net/wp-content/uploads/2023/11/image-59.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-59.png 773w, https://madsblog.net/wp-content/uploads/2023/11/image-59-300x45.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-59-768x116.png 768w" width="773"/>
+      </figure>
+      <p>
+       Re-creamos el pod:
+      </p>
+      <p>
+       Para desplegarlo utilizaremos el siguiente comando:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl apply -f nginx-fronted.yaml" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">apply</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">f</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">nginx</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">fronted</span><span style="color: #ECEFF4">.</span><span style="color: #D8DEE9">yaml</span></span></code></pre>
+      </div>
+      <p>
+       Y verificamos la persistencia leyendo el archivo creado en el paso anterior.
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="cat /var/www/html/index.html" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">cat</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">/var</span><span style="color: #D8DEE9FF">/</span><span style="color: #D8DEE9">www</span><span style="color: #D8DEE9FF">/html/index.html</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image size-full is-resized">
+       <img alt="" class="wp-image-1123" decoding="async" height="235" loading="lazy" sizes="(max-width: 613px) 100vw, 613px" src="https://madsblog.net/wp-content/uploads/2023/11/image-61.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-61.png 613w, https://madsblog.net/wp-content/uploads/2023/11/image-61-300x115.png 300w" style="width:693px;height:auto" width="613"/>
+      </figure>
+      <h2 class="wp-block-heading">
+       <span class="ez-toc-section" id="Crear_StatefulSet">
+       </span>
+       Crear StatefulSet
+       <span class="ez-toc-section-end">
+       </span>
+      </h2>
+      <p>
+       Ahora crearemos un StatefulSet.
+      </p>
+      <p>
+       Utilizaremos el siguiente yaml:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code='kind: Service
+apiVersion: v1
+metadata:
+  name: statefulset-demo-service
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-demo
+spec:
+  selector:
+    matchLabels:
+      app: MyApp
+  serviceName: statefulset-demo-service
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: MyApp
+    spec:
+      containers:
+      - name: stateful-set-container
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: hello-web-disk
+          mountPath: "/var/www/html"
+  volumeClaimTemplates:
+  - metadata:
+      name: hello-web-disk
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 30Gi' role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9FF">kind</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">Service</span></span>
+<span class="line"><span style="color: #D8DEE9FF">apiVersion</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">v1</span></span>
+<span class="line"><span style="color: #D8DEE9FF">metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">statefulset</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">service</span></span>
+<span class="line"><span style="color: #D8DEE9FF">spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  ports</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> protocol</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">TCP</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    port</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #B48EAD">80</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    targetPort</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #B48EAD">9376</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  type</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">LoadBalancer</span></span>
+<span class="line"><span style="color: #81A1C1">---</span></span>
+<span class="line"><span style="color: #D8DEE9FF">apiVersion</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">apps</span><span style="color: #81A1C1">/</span><span style="color: #D8DEE9">v1</span></span>
+<span class="line"><span style="color: #D8DEE9FF">kind</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">StatefulSet</span></span>
+<span class="line"><span style="color: #D8DEE9FF">metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">statefulset</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span></span>
+<span class="line"><span style="color: #D8DEE9FF">spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  selector</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    matchLabels</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      app</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">MyApp</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  serviceName</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">statefulset</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">service</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  replicas</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #B48EAD">3</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  updateStrategy</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    type</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">RollingUpdate</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  template</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      labels</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        app</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">MyApp</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      containers</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">stateful</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">set</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">container</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        image</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">nginx</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        ports</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> containerPort</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #B48EAD">80</span></span>
+<span class="line"><span style="color: #D8DEE9FF">          name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">http</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        volumeMounts</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">hello</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">web</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">disk</span></span>
+<span class="line"><span style="color: #D8DEE9FF">          mountPath</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #ECEFF4">"</span><span style="color: #A3BE8C">/var/www/html</span><span style="color: #ECEFF4">"</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  volumeClaimTemplates</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">  </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9FF"> metadata</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      name</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">hello</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">web</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">disk</span></span>
+<span class="line"><span style="color: #D8DEE9FF">    spec</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      accessModes</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> [ </span><span style="color: #ECEFF4">"</span><span style="color: #A3BE8C">ReadWriteOnce</span><span style="color: #ECEFF4">"</span><span style="color: #D8DEE9FF"> ]</span></span>
+<span class="line"><span style="color: #D8DEE9FF">      resources</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">        requests</span><span style="color: #ECEFF4">:</span></span>
+<span class="line"><span style="color: #D8DEE9FF">          storage</span><span style="color: #ECEFF4">:</span><span style="color: #D8DEE9FF"> 30</span><span style="color: #D8DEE9">Gi</span></span></code></pre>
+      </div>
+      <p>
+       La caracteristica diferenciada de este yaml es que en lugar de declarar el volumen a nivel del pod, declaramos el volumeClaimTemplates, donde especificamos los datos de nuestro PVC directamente dentro de este mismo yaml.
+      </p>
+      <p>
+       Esto generará que se creen nuevos PVCs a partir de la aplicación de este archivo.
+      </p>
+      <p>
+       Lo desplegamos utilizando el comando “kubectl apply” ejecutado anteriormente, pero cambiando el archivo:
+      </p>
+      <div class="wp-block-kevinbatdorf-code-block-pro" data-code-block-pro-font-family="Code-Pro-JetBrains-Mono" style="font-size:.875rem;font-family:Code-Pro-JetBrains-Mono,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;line-height:1.25rem;--cbp-tab-width:2;tab-size:var(--cbp-tab-width, 2)">
+       <span style="display:block;padding:16px 0 0 16px;margin-bottom:-1px;width:100%;text-align:left;background-color:#2e3440ff">
+        <svg height="14" viewbox="0 0 54 14" width="54" xmlns="http://www.w3.org/2000/svg">
+         <g fill="none" fill-rule="evenodd" transform="translate(1 1)">
+          <circle cx="6" cy="6" fill="#FF5F56" r="6" stroke="#E0443E" stroke-width=".5">
+          </circle>
+          <circle cx="26" cy="6" fill="#FFBD2E" r="6" stroke="#DEA123" stroke-width=".5">
+          </circle>
+          <circle cx="46" cy="6" fill="#27C93F" r="6" stroke="#1AAB29" stroke-width=".5">
+          </circle>
+         </g>
+        </svg>
+       </span>
+       <span aria-label="Copy" class="code-block-pro-copy-button" data-code="kubectl apply -f statefulset-demo.yaml" role="button" style="color:#d8dee9ff;display:none" tabindex="0">
+        <svg fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+         <path class="with-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+         <path class="without-check" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round">
+         </path>
+        </svg>
+       </span>
+       <pre class="shiki nord" style="background-color: #2e3440ff" tabindex="0"><code><span class="line"><span style="color: #D8DEE9">kubectl</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">apply</span><span style="color: #D8DEE9FF"> </span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">f</span><span style="color: #D8DEE9FF"> </span><span style="color: #D8DEE9">statefulset</span><span style="color: #81A1C1">-</span><span style="color: #D8DEE9">demo</span><span style="color: #ECEFF4">.</span><span style="color: #D8DEE9">yaml</span></span></code></pre>
+      </div>
+      <figure class="wp-block-image size-full">
+       <img alt="" class="wp-image-1124" decoding="async" height="780" loading="lazy" sizes="(max-width: 775px) 100vw, 775px" src="https://madsblog.net/wp-content/uploads/2023/11/image-62.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-62.png 775w, https://madsblog.net/wp-content/uploads/2023/11/image-62-298x300.png 298w, https://madsblog.net/wp-content/uploads/2023/11/image-62-150x150.png 150w, https://madsblog.net/wp-content/uploads/2023/11/image-62-768x773.png 768w" width="775"/>
+      </figure>
+      <p>
+       Podemos observar los pods creados:
+      </p>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1125" decoding="async" height="114" loading="lazy" sizes="(max-width: 763px) 100vw, 763px" src="https://madsblog.net/wp-content/uploads/2023/11/image-63.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-63.png 763w, https://madsblog.net/wp-content/uploads/2023/11/image-63-300x45.png 300w" width="763"/>
+      </figure>
+      <p>
+       Y como comentamos anteriormente los PVC creados.
+      </p>
+      <figure class="wp-block-image alignwide size-full">
+       <img alt="" class="wp-image-1126" decoding="async" height="193" loading="lazy" sizes="(max-width: 900px) 100vw, 900px" src="https://madsblog.net/wp-content/uploads/2023/11/image-64.png" srcset="https://madsblog.net/wp-content/uploads/2023/11/image-64.png 900w, https://madsblog.net/wp-content/uploads/2023/11/image-64-300x64.png 300w, https://madsblog.net/wp-content/uploads/2023/11/image-64-768x165.png 768w" width="900"/>
+      </figure>
+      <p>
+       Esto, al igual que en punto anterior nos dará persistencia de discos, pero un StatefulSet nos da otros features de una capa de abstracción mayor.
+      </p>
+      <p>
+      </p>
+      <div class="addtoany_share_save_container addtoany_content addtoany_content_bottom">
+       <div class="a2a_kit a2a_kit_size_32 addtoany_list" data-a2a-title="Storage Persistente en GKE" data-a2a-url="https://madsblog.net/2023/11/24/storage-persistente-en-gke/">
+        <a class="a2a_button_twitter" href="https://www.addtoany.com/add_to/twitter?linkurl=https%3A%2F%2Fmadsblog.net%2F2023%2F11%2F24%2Fstorage-persistente-en-gke%2F&amp;linkname=Storage%20Persistente%20en%20GKE" rel="nofollow noopener" target="_blank" title="Twitter">
+        </a>
+        <a class="a2a_button_email" href="https://www.addtoany.com/add_to/email?linkurl=https%3A%2F%2Fmadsblog.net%2F2023%2F11%2F24%2Fstorage-persistente-en-gke%2F&amp;linkname=Storage%20Persistente%20en%20GKE" rel="nofollow noopener" target="_blank" title="Email">
+        </a>
+        <a class="a2a_button_linkedin" href="https://www.addtoany.com/add_to/linkedin?linkurl=https%3A%2F%2Fmadsblog.net%2F2023%2F11%2F24%2Fstorage-persistente-en-gke%2F&amp;linkname=Storage%20Persistente%20en%20GKE" rel="nofollow noopener" target="_blank" title="LinkedIn">
+        </a>
+        <a class="a2a_button_whatsapp" href="https://www.addtoany.com/add_to/whatsapp?linkurl=https%3A%2F%2Fmadsblog.net%2F2023%2F11%2F24%2Fstorage-persistente-en-gke%2F&amp;linkname=Storage%20Persistente%20en%20GKE" rel="nofollow noopener" target="_blank" title="WhatsApp">
+        </a>
+        <a class="a2a_dd addtoany_share_save addtoany_share" href="https://www.addtoany.com/share">
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="wp-block-template-part">
+     <div aria-hidden="true" class="wp-block-spacer" style="height:0">
+     </div>
+     <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained" style="margin-top:var(--wp--preset--spacing--70)">
+      <hr class="wp-block-separator alignwide has-css-opacity is-style-wide"/>
+      <div class="wp-block-columns alignwide has-small-font-size is-layout-flex wp-container-core-columns-layout-1 wp-block-columns-is-layout-flex" style="margin-top:var(--wp--preset--spacing--30)">
+       <div class="wp-block-column is-layout-flow wp-container-core-column-layout-1 wp-block-column-is-layout-flow">
+        <div class="wp-block-group is-layout-flex wp-container-core-group-layout-5 wp-block-group-is-layout-flex">
+         <p>
+          Posted
+         </p>
+         <div class="wp-block-post-date">
+          <time datetime="2023-11-24T20:05:06+00:00">
+           November 24, 2023
+          </time>
+         </div>
+         <p>
+          in
+         </p>
+         <div class="taxonomy-category wp-block-post-terms">
+          <a href="https://madsblog.net/category/google-cloud-platform/" rel="tag">
+           GCP
+          </a>
+          <span class="wp-block-post-terms__separator">
+           ,
+          </span>
+          <a href="https://madsblog.net/category/google-cloud-platform/gke/" rel="tag">
+           GKE
+          </a>
+          <span class="wp-block-post-terms__separator">
+           ,
+          </span>
+          <a href="https://madsblog.net/category/devops-tools/kubernetes/" rel="tag">
+           Kubernetes
+          </a>
+         </div>
+        </div>
+        <div class="wp-block-group is-layout-flex wp-container-core-group-layout-6 wp-block-group-is-layout-flex">
+         <p>
+          by
+         </p>
+         <div class="wp-block-post-author">
+          <div class="wp-block-post-author__content">
+           <p class="wp-block-post-author__name">
+            siteadmin
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="wp-block-column is-layout-flow wp-container-core-column-layout-2 wp-block-column-is-layout-flow">
+        <div class="wp-block-group is-vertical is-layout-flex wp-container-core-group-layout-7 wp-block-group-is-layout-flex">
+         <p>
+          Tags:
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <section class="wp-block-template-part">
+     <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained" style="padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
+      <div class="wp-block-comments">
+       <h2 class="wp-block-heading">
+        Comments
+       </h2>
+       <div class="comment-respond wp-block-post-comments-form" id="respond">
+        <h3 class="comment-reply-title" id="reply-title">
+         Leave a Reply
+         <small>
+          <a href="/2023/11/24/storage-persistente-en-gke/#respond" id="cancel-comment-reply-link" rel="nofollow" style="display:none;">
+           Cancel reply
+          </a>
+         </small>
+        </h3>
+        <form action="https://madsblog.net/wp-comments-post.php" class="comment-form" id="commentform" method="post" novalidate="">
+         <p class="comment-notes">
+          <span id="email-notes">
+           Your email address will not be published.
+          </span>
+          <span class="required-field-message">
+           Required fields are marked
+           <span class="required">
+            *
+           </span>
+          </span>
+         </p>
+         <p class="comment-form-comment">
+          <label for="comment">
+           Comment
+           <span class="required">
+            *
+           </span>
+          </label>
+          <textarea cols="45" id="comment" maxlength="65525" name="comment" required="" rows="8"></textarea>
+         </p>
+         <p class="comment-form-author">
+          <label for="author">
+           Name
+           <span class="required">
+            *
+           </span>
+          </label>
+          <input autocomplete="name" id="author" maxlength="245" name="author" required="" size="30" type="text" value=""/>
+         </p>
+         <p class="comment-form-email">
+          <label for="email">
+           Email
+           <span class="required">
+            *
+           </span>
+          </label>
+          <input aria-describedby="email-notes" autocomplete="email" id="email" maxlength="100" name="email" required="" size="30" type="email" value=""/>
+         </p>
+         <p class="comment-form-url">
+          <label for="url">
+           Website
+          </label>
+          <input autocomplete="url" id="url" maxlength="200" name="url" size="30" type="url" value=""/>
+         </p>
+         <p class="comment-form-cookies-consent">
+          <input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"/>
+          <label for="wp-comment-cookies-consent">
+           Save my name, email, and website in this browser for the next time I comment.
+          </label>
+         </p>
+         <p class="form-submit wp-block-button">
+          <input class="wp-block-button__link wp-element-button" id="submit" name="submit" type="submit" value="Post Comment"/>
+          <input id="comment_post_ID" name="comment_post_ID" type="hidden" value="1109"/>
+          <input id="comment_parent" name="comment_parent" type="hidden" value="0"/>
+         </p>
+         <p style="display: none;">
+          <input id="akismet_comment_nonce" name="akismet_comment_nonce" type="hidden" value="d4a6551c27"/>
+         </p>
+         <p style="display: none !important;">
+          <label>
+           Δ
+           <textarea cols="45" maxlength="100" name="ak_hp_textarea" rows="8"></textarea>
+          </label>
+          <input id="ak_js_1" name="ak_js" type="hidden" value="209"/>
+          <script>
+           document.getElementById( "ak_js_1" ).setAttribute( "value", ( new Date() ).getTime() );
+          </script>
+         </p>
+        </form>
+       </div>
+       <!-- #respond -->
+       <p class="akismet_comment_form_privacy_notice">
+        This site uses Akismet to reduce spam.
+        <a href="https://akismet.com/privacy/" rel="nofollow noopener" target="_blank">
+         Learn how your comment data is processed
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </section>
+   </main>
+   <footer class="wp-block-template-part">
+    <div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
+     <div class="wp-block-group alignwide is-content-justification-space-between is-layout-flex wp-container-core-group-layout-11 wp-block-group-is-layout-flex" style="padding-top:var(--wp--preset--spacing--40)">
+      <p class="wp-block-site-title">
+       <a href="https://madsblog.net" rel="home" target="_self">
+        Aprende Multi Cloud(s)
+       </a>
+      </p>
+      <p class="has-text-align-right">
+       Proudly powered by
+       <a href="https://wordpress.org" rel="nofollow">
+        WordPress
+       </a>
+      </p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script data-wp-strategy="defer" id="kevinbatdorf-code-block-pro-view-script-js" src="https://madsblog.net/wp-content/plugins/code-block-pro/build/front/front.js?ver=8eb026fbc72eb8ed3635">
+  </script>
+  <script id="kevinbatdorf-code-block-pro-view-script-js-after">
+   window.codeBlockPro = {"pluginUrl":"https:\/\/madsblog.net\/wp-content\/plugins\/code-block-pro\/"};
+  </script>
+  <script defer="" id="akismet-frontend-js" src="https://madsblog.net/wp-content/plugins/akismet/_inc/akismet-frontend.js?ver=1700514765">
+  </script>
+  <script async="" data-wp-strategy="async" id="comment-reply-js" src="https://madsblog.net/wp-includes/js/comment-reply.min.js?ver=6.4.1">
+  </script>
+  <script id="wp-block-template-skip-link-js-after">
+   ( function() {
+		var skipLinkTarget = document.querySelector( 'main' ),
+			sibling,
+			skipLinkTargetID,
+			skipLink;
+
+		// Early exit if a skip-link target can't be located.
+		if ( ! skipLinkTarget ) {
+			return;
+		}
+
+		/*
+		 * Get the site wrapper.
+		 * The skip-link will be injected in the beginning of it.
+		 */
+		sibling = document.querySelector( '.wp-site-blocks' );
+
+		// Early exit if the root element was not found.
+		if ( ! sibling ) {
+			return;
+		}
+
+		// Get the skip-link target's ID, and generate one if it doesn't exist.
+		skipLinkTargetID = skipLinkTarget.id;
+		if ( ! skipLinkTargetID ) {
+			skipLinkTargetID = 'wp--skip-link--target';
+			skipLinkTarget.id = skipLinkTargetID;
+		}
+
+		// Create the skip link.
+		skipLink = document.createElement( 'a' );
+		skipLink.classList.add( 'skip-link', 'screen-reader-text' );
+		skipLink.href = '#' + skipLinkTargetID;
+		skipLink.innerHTML = 'Skip to content';
+
+		// Inject the skip link.
+		sibling.parentElement.insertBefore( skipLink, sibling );
+	}() );
+  </script>
+  <script id="ez-toc-scroll-scriptjs-js-extra">
+   var eztoc_smooth_local = {"scroll_offset":"30"};
+  </script>
+  <script id="ez-toc-scroll-scriptjs-js" src="https://madsblog.net/wp-content/plugins/easy-table-of-contents/assets/js/smooth_scroll.min.js?ver=2.0.58">
+  </script>
+  <script id="ez-toc-js-cookie-js" src="https://madsblog.net/wp-content/plugins/easy-table-of-contents/vendor/js-cookie/js.cookie.min.js?ver=2.2.1">
+  </script>
+  <script id="ez-toc-jquery-sticky-kit-js" src="https://madsblog.net/wp-content/plugins/easy-table-of-contents/vendor/sticky-kit/jquery.sticky-kit.min.js?ver=1.9.2">
+  </script>
+  <script id="ez-toc-js-js-extra">
+   var ezTOC = {"smooth_scroll":"1","visibility_hide_by_default":"","scroll_offset":"30","fallbackIcon":"<span class=\"\"><span class=\"eztoc-hide\" style=\"display:none;\">Toggle<\/span><span class=\"ez-toc-icon-toggle-span\"><svg style=\"fill: #999;color:#999\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" class=\"list-377408\" width=\"20px\" height=\"20px\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M6 6H4v2h2V6zm14 0H8v2h12V6zM4 11h2v2H4v-2zm16 0H8v2h12v-2zM4 16h2v2H4v-2zm16 0H8v2h12v-2z\" fill=\"currentColor\"><\/path><\/svg><svg style=\"fill: #999;color:#999\" class=\"arrow-unsorted-368013\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"10px\" height=\"10px\" viewBox=\"0 0 24 24\" version=\"1.2\" baseProfile=\"tiny\"><path d=\"M18.2 9.3l-6.2-6.3-6.2 6.3c-.2.2-.3.4-.3.7s.1.5.3.7c.2.2.4.3.7.3h11c.3 0 .5-.1.7-.3.2-.2.3-.5.3-.7s-.1-.5-.3-.7zM5.8 14.7l6.2 6.3 6.2-6.3c.2-.2.3-.5.3-.7s-.1-.5-.3-.7c-.2-.2-.4-.3-.7-.3h-11c-.3 0-.5.1-.7.3-.2.2-.3.5-.3.7s.1.5.3.7z\"\/><\/svg><\/span><\/span>"};
+  </script>
+  <script id="ez-toc-js-js" src="https://madsblog.net/wp-content/plugins/easy-table-of-contents/assets/js/front.min.js?ver=2.0.58-1700514773">
+  </script>
+  <script id="ez-toc-sticky-js-after">
+   function ezTOC_hideBar(e) { var sidebar = document.querySelector(".ez-toc-sticky-fixed"); if ( typeof(sidebar) !== "undefined" && sidebar !== null ) { sidebar.classList.remove("show"); sidebar.classList.add("hide"); setTimeout(function() { document.querySelector(".ez-toc-open-icon").style = "z-index: 9999999"; }, 200); if(e.target.classList.contains('ez-toc-close-icon') || e.target.parentElement.classList.contains( 'ez-toc-close-icon' )){e.preventDefault();}} } function ezTOC_showBar(e) { e.preventDefault();document.querySelector(".ez-toc-open-icon").style = "z-index: -1;";setTimeout(function() { var sidebar = document.querySelector(".ez-toc-sticky-fixed"); sidebar.classList.remove("hide"); sidebar.classList.add("show"); }, 200); } (function() { let ez_toc_sticky_fixed_container = document.querySelector('div.ez-toc-sticky-fixed');if(ez_toc_sticky_fixed_container) { document.body.addEventListener("click", function (evt) { ezTOC_hideBar(evt); }); ez_toc_sticky_fixed_container.addEventListener('click', function(event) { event.stopPropagation(); }); document.querySelector('.ez-toc-open-icon').addEventListener('click', function(event) { event.stopPropagation(); }); } })();
+                
+                jQuery(document).ready(function() {
+    jQuery("#ez-toc-sticky-container a.ez-toc-link").click(function(e) {
+        ezTOC_hideBar(e);
+    });
+});
+  </script>
+  <script id="hoverIntent-js" src="https://madsblog.net/wp-includes/js/hoverIntent.min.js?ver=1.10.2">
+  </script>
+  <script id="megamenu-js-extra">
+   var megamenu = {"timeout":"300","interval":"100"};
+  </script>
+  <script id="megamenu-js" src="https://madsblog.net/wp-content/plugins/megamenu/js/maxmegamenu.js?ver=3.2.4">
+  </script>
+ </body>
+</html>
