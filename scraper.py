@@ -35,8 +35,6 @@ class Scraper:
 
         return items
 
-
-
     def html_process(self):
         content_list = []
         

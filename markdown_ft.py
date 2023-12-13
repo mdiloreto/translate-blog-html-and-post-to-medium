@@ -11,7 +11,7 @@ class Convertmarkdown:
         l = 0
         for point in bullet_points:
             if l == 0:
-                markdown_bullets += f"\n\n{point}\n\n"
+                markdown_bullets += f"{point}"
             # Determine the indentation level (assumes 2 spaces per indent level)
                 l = l+1
             else:
@@ -20,6 +20,7 @@ class Convertmarkdown:
                 if formatted_point:
                     markdown_bullets += f"{indentation_level}- {formatted_point}\n" # <---- Here we set the bullet type. 
                 l = l+1
+            l = l+1
         return markdown_bullets
     
     # def process_bullets(self, bullet_content):

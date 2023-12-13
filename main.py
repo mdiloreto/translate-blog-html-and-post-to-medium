@@ -23,9 +23,11 @@ if __name__ == "__main__":
     scraper.fetch_content()
     content = scraper.html_process()
     
-    # GET content
-    # for element in content:
-    #     print(element['content'])
+  # GET content
+   
+    for element in content:
+        if element['type'] == "bullet-list": 
+            print(f"{element['type']}: {element['content']}\n")
 
     # Initialize Translator
     translator = Translator(endpoint, credential)
