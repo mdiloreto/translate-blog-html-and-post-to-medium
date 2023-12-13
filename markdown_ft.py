@@ -11,7 +11,7 @@ class Convertmarkdown:
         l = 0
         for point in bullet_points:
             if l == 0:
-                markdown_bullets += f"{point}\n\n"
+                markdown_bullets += f"\n\n{point}\n\n"
             # Determine the indentation level (assumes 2 spaces per indent level)
                 l = l+1
             else:
@@ -42,7 +42,7 @@ class Convertmarkdown:
             if element['type'] == 'heading':
                 markdown_content += f"# {element['content']}\n\n"
             elif element['type'] == 'paragraph':
-                markdown_content += f"{element['content']}\n"
+                markdown_content += f"\n{element['content']}\n"
             elif element['type'] == 'image':
                 markdown_content += f"![Image]({element['content']})\n\n"
             elif element['type'] == 'code':
