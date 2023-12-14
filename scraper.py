@@ -47,21 +47,23 @@ class Scraper:
                     if paragraph_text.lower() in ['posted', 'siteadmin' ,'in', 'by', 'tags:', 'Comment*', 'name*', 'email*', 'website', 'Save my name, email, and website in this browser for the next time I comment.', 'Δ', '']:
                         continue  # Skip these paragraphs
                     content_list.append({'type': 'paragraph', 'content': paragraph_text})
-
+                  
+                  
                 elif element.name == 'ul':
-                    
                     if element.find('ul'):
-                        item = element.find('ul')
-                        if item:
-                            for item in item:
-                                item.get_text(strip=True)
-                                content_list.append({'type': 'bullet-list', 'content': item})
+                        nested_ul = element.find('ul')
+                        for item in nested_ul.find_all('li', recursive=False):
+                            if item.find('ul')
+                                item_ul = item.find('ul')
+                                text = item_ul.get_text(strip=True)
+                                content_list.append({'type': 'bullet-list', 'content': text})                                
+                            text = item.get_text(strip=True)
+                            content_list.append({'type': 'bullet-list', 'content': text})
                     else:
-                        item = element.find('li')
-                        if item:
-                            for item in item:
-                                item.get_text(strip=True)
-                                content_list.append({'type': 'bullet-list', 'content': item})
+                        for item in element.find_all('li', recursive=False):
+                            text = item.get_text(strip=True)
+                            content_list.append({'type': 'bullet-list', 'content': text})
+
 
                 elif element.name == 'img':
                     # Process as image

@@ -29,55 +29,55 @@ if __name__ == "__main__":
         if element['type'] == "bullet-list": 
             print(f"{element['type']}: {element['content']}\n")
 
-#     # Initialize Translator
-#     translator = Translator(endpoint, credential)
+    # Initialize Translator
+    translator = Translator(endpoint, credential)
         
-#     # Translate Content
-#     content_en = []
-#     for element in content:
-#         if element['type'] != 'image':  # Skip translation for images
-#             translated_text = translator.translate(element['content'])
-#             content_en.append({'type': element['type'], 'content': translated_text})
-#         else:
-#             content_en.append(element)  # Add images as-is
+    # Translate Content
+    content_en = []
+    for element in content:
+        if element['type'] != 'image':  # Skip translation for images
+            translated_text = translator.translate(element['content'])
+            content_en.append({'type': element['type'], 'content': translated_text})
+        else:
+            content_en.append(element)  # Add images as-is
         
-#     for element in content_en:
-#         print(f"{element['type']}: {element['content']}\n")
+    for element in content_en:
+        print(f"{element['type']}: {element['content']}\n")
     
-#   # Convert to Markdown
-#     markdownfile = "output.md"
-#     converter = Convertmarkdown(content_en, markdownfile)
-#     markdown_content = converter.convert_to_markdown()
-#     converter.save_to_markdown_file(markdown_content)  # Pass the generated markdown content to the method
+  # Convert to Markdown
+    markdownfile = "output.md"
+    converter = Convertmarkdown(content_en, markdownfile)
+    markdown_content = converter.convert_to_markdown()
+    converter.save_to_markdown_file(markdown_content)  # Pass the generated markdown content to the method
     
-#   # Medium publish
-#     access_token = os.getenv('MEDIUM_ACCESS_TOKEN')
-#     if not access_token:
-#         raise ValueError("No Medium access token found in environment variables")
+  # Medium publish
+    access_token = os.getenv('MEDIUM_ACCESS_TOKEN')
+    if not access_token:
+        raise ValueError("No Medium access token found in environment variables")
 
-#     Medium_publisher = MediumPublisher(access_token)
+    Medium_publisher = MediumPublisher(access_token)
     
-#   # Get content for the file  
-#     with open("C:\\Users\\mateo\\OneDrive\\vscode\\py-chatgpt-translate-webpost\\output.md", "r", encoding="utf-8") as file:
-#         file_content = file.read()
+  # Get content for the file  
+    with open("C:\\Users\\mateo\\OneDrive\\vscode\\py-chatgpt-translate-webpost\\output.md", "r", encoding="utf-8") as file:
+        file_content = file.read()
     
-#         markdown_file_path = 'C:\\Users\\mateo\\OneDrive\\vscode\\py-chatgpt-translate-webpost\\output.md'
+        markdown_file_path = 'C:\\Users\\mateo\\OneDrive\\vscode\\py-chatgpt-translate-webpost\\output.md'
     
-# #     # Create an instance of the converter class
-# #     converter = Md_to_html(markdown_file_path)
+#     # Create an instance of the converter class
+#     converter = Md_to_html(markdown_file_path)
     
-# #     # Convert Markdown to HTML
-# #     html_content = converter.markdown_to_html()
+#     # Convert Markdown to HTML
+#     html_content = converter.markdown_to_html()
     
-# #     # Now you can use html_content as needed
-# #     print(html_content)
+#     # Now you can use html_content as needed
+#     print(html_content)
         
-#     user_id = Medium_publisher.get_user_id()
-#     title = ""
-#     for element in content_en:
-#         if element['type'] == 'title':
-#             title = element['content']
-#             break 
+    user_id = Medium_publisher.get_user_id()
+    title = ""
+    for element in content_en:
+        if element['type'] == 'title':
+            title = element['content']
+            break 
 
-#     post = Medium_publisher.create_post(user_id, title, file_content)
+    post = Medium_publisher.create_post(user_id, title, file_content)
     

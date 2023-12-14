@@ -11,7 +11,7 @@ class Convertmarkdown:
         l = 0
         for point in bullet_points:
             if l == 0:
-                markdown_bullets += f"{point}"
+                markdown_bullets += f"* {point}"
             # Determine the indentation level (assumes 2 spaces per indent level)
                 l = l+1
             else:

@@ -16,17 +16,6 @@ This type of Volume is allocated at the pod level and depends on the lifecycle o
 With these types of volumes, when the pod's lifecycle ends, the data lifecycle ends as well. Volumes will not maintain data persistence.
 
 Some examples:
-emptyDir: When a storage pod is defined as this volume type, it is created when the pod is assigned to a node in the cluster. An empty directory is assigned (as the name implies). It is shared for all Containers within the pod. When the pod's lifecycle ends. It also terminates the emptyDir volume and its data is deleted. When a container crashes, the data is not deleted. Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.   - When a storage pod is defined this volume type, it is created when the pod is assigned to a node in the cluster.
-   - An empty directory is assigned (as the name implies).
-   - It is shared for all Containers within the pod.
-   - When the pod's lifecycle ends. It also terminates the emptyDir volume and its data is deleted.
-   - When a container crashes, the data is not deleted.
-   - Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.
-      - Scratch space.
-      - Save checkpoints in long calculations to recover from failures.
-      - Maintain files that a Content-Manager container fetches while a web server container provides the data.
-
-
 When a storage pod is defined this volume type, it is created when the pod is assigned to a node in the cluster.
 
 An empty directory is assigned (as the name implies).
@@ -37,10 +26,13 @@ When the pod's lifecycle ends. It also terminates the emptyDir volume and its da
 
 When a container crashes, the data is not deleted.
 
-Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.   - Scratch space.
-   - Save checkpoints in long calculations to recover from failures.
-   - Maintain files that a Content-Manager container fetches while a web server container provides the data.
+Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
+Scratch space.
+
+Save checkpoints in long calculations to recover from failures.
+
+Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
 Scratch space.
 
@@ -50,12 +42,9 @@ Maintain files that a Content-Manager container fetches while a web server conta
 
 
 Ephemerals with particular purposes:
-ConfigMaps: This is a way to inject configuration data into pods. It is referenced within the pod specifications.   - It's a way to inject configuration data into pods.
-   - It is referenced within the pod specifications.
+It's a way to inject configuration data into pods.
 
-
-Secrets: Used to pass sensitive information such as passwords to pods.   - It is used to pass sensitive information such as passwords to pods.
-
+It is referenced within the pod specifications.
 
 It's a way to inject configuration data into pods.
 
@@ -73,13 +62,9 @@ They can be either PersistenVolumes or PersistentVolumesClaim.
 
 
 The types we'll be looking at today:
-PersistenVolume (PV): This is the persistent storage statement presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods. The type of Storage is defined by the StorageClasses.   - This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
-   - The type of Storage is defined by the StorageClasses.
+This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
 
-
-PersistentVolumeClaim (PVC):This is the requester configured at the pod level to consume the PV. The request can specify specific resource levels, sizes, and access models.   - This is the requester configured at the pod level to consume the PV.
-   - The request can specify specific resource levels, sizes, and access models.
-
+The type of Storage is defined by the StorageClasses.
 
 This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
 
