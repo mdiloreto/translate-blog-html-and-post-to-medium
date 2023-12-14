@@ -12,28 +12,11 @@ class Scraper:
         response.raise_for_status()  # Raises an HTTPError for bad responses
         self.soup = BeautifulSoup(response.content, 'html.parser')
         
-    def extract_list_items(self, ul, indent=0):
-        items = []
-        for li in ul.find_all("li", recursive=False):
-            # Remove <strong> tags and keep their text content
-            for strong_tag in li.find_all('strong'):
-                strong_text = strong_tag.get_text(strip=True)
-                strong_tag.unwrap()  # This removes the <strong> tag but keeps the text
+    def extract_list_items(self, ul):
+        ul_list = ul.find('ul')
 
-            # Get text for the current <li> without nested <ul>
-            item_l1 = li.get_text(strip=True)
+        return ul_list       
 
-            # Check for nested <ul> and recursively get nested list items
-            nested_ul = li.find("ul")
-            if nested_ul:
-                nested_items = self.extract_list_items(nested_ul, indent + 1)
-                item_l1 += '\n' + '\n'.join(nested_items)
-
-            # Add indentation
-            indented_text = "   " * indent  + item_l1
-            items.append(indented_text)
-
-        return items
 
     def html_process(self):
         content_list = []
@@ -65,11 +48,20 @@ class Scraper:
                         continue  # Skip these paragraphs
                     content_list.append({'type': 'paragraph', 'content': paragraph_text})
 
-
                 elif element.name == 'ul':
-                    list_items = self.extract_list_items(element)
-                    for item in list_items:
-                        content_list.append({'type': 'bullet-list', 'content': item})
+                    
+                    if element.find('ul'):
+                        item = element.find('ul')
+                        if item:
+                            for item in item:
+                                item.get_text(strip=True)
+                                content_list.append({'type': 'bullet-list', 'content': item})
+                    else:
+                        item = element.find('li')
+                        if item:
+                            for item in item:
+                                item.get_text(strip=True)
+                                content_list.append({'type': 'bullet-list', 'content': item})
 
                 elif element.name == 'img':
                     # Process as image
