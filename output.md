@@ -16,63 +16,65 @@ This type of Volume is allocated at the pod level and depends on the lifecycle o
 With these types of volumes, when the pod's lifecycle ends, the data lifecycle ends as well. Volumes will not maintain data persistence.
 
 Some examples:
-When a storage pod is defined this volume type, it is created when the pod is assigned to a node in the cluster.
+* When a storage pod is defined this volume type, it is created when the pod is assigned to a node in the cluster.
 
-An empty directory is assigned (as the name implies).
+* An empty directory is assigned (as the name implies).
 
-It is shared for all Containers within the pod.
+* It is shared for all Containers within the pod.
 
-When the pod's lifecycle ends. It also terminates the emptyDir volume and its data is deleted.
+* When the pod's lifecycle ends. It also terminates the emptyDir volume and its data is deleted.
 
-When a container crashes, the data is not deleted.
+* When a container crashes, the data is not deleted.
 
-Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.
+* Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
-Scratch space.
+* Some possible uses:Scratch space. Save checkpoints in long calculations to recover from failures. Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
-Save checkpoints in long calculations to recover from failures.
+* Scratch space.
 
-Maintain files that a Content-Manager container fetches while a web server container provides the data.
+* Save checkpoints in long calculations to recover from failures.
 
-Scratch space.
+* Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
-Save checkpoints in long calculations to recover from failures.
+* Scratch space.
 
-Maintain files that a Content-Manager container fetches while a web server container provides the data.
+* Save checkpoints in long calculations to recover from failures.
+
+* Maintain files that a Content-Manager container fetches while a web server container provides the data.
 
 
 Ephemerals with particular purposes:
-It's a way to inject configuration data into pods.
+* It's a way to inject configuration data into pods.
 
-It is referenced within the pod specifications.
+* It is referenced within the pod specifications.
 
-It's a way to inject configuration data into pods.
+* It's a way to inject configuration data into pods.
 
-It is referenced within the pod specifications.
+* It is referenced within the pod specifications.
 
-It is used to pass sensitive information such as passwords to pods.
+* It is used to pass sensitive information such as passwords to pods.
 
 # Persistent Volumes:
 
-They are independent.
+* They are independent.
 
-They do not depend on the life cycle of the Pods.
+* They do not depend on the life cycle of the Pods.
 
-They can be either PersistenVolumes or PersistentVolumesClaim.
+* They can be either PersistenVolumes or PersistentVolumesClaim.
 
 
 The types we'll be looking at today:
-This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
+* This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
 
-The type of Storage is defined by the StorageClasses.
+* The type of Storage is defined by the StorageClasses.
 
-This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
+* This is the statement of the persistent storage presented in the cluster. It is provisioned using Storage Classes. They have a life independent of pods.
 
-The type of Storage is defined by the StorageClasses.
+* The type of Storage is defined by the StorageClasses.
 
-This is the requester configured at the pod level to consume the PV.
+* This is the requester configured at the pod level to consume the PV.
 
-The request can specify specific resource levels, sizes, and access models.
+* The request can specify specific resource levels, sizes, and access models.
 
 # What is a StatefulSet?
 
@@ -84,13 +86,13 @@ It manages the deployment and scaling of a set of Pods and provides guarantees o
 The difference with deployments is that an identity is handled for each pod. They are created with the same specifications but are not interchangeable. Persistent identifiers are set and maintained during reschedules.
 
 They are used for apps that require:
-Unique Network Identifiers.
+* Unique Network Identifiers.
 
-Storage Persistent and stable.
+* Storage Persistent and stable.
 
-One-time deployment and scaling in an orderly manner.
+* One-time deployment and scaling in an orderly manner.
 
-Automatic rolling updates.
+* Automatic rolling updates.
 
 # Lab: Testing PersistentVolumes on GKE
 
@@ -176,9 +178,9 @@ Spec:
 ```
 
 As we can see, PVC is declared in
-specs.containers.frontend.mountPath: where we reference the mount path and the PVC.
+* specs.containers.frontend.mountPath: where we reference the mount path and the PVC.
 
-specs.volumes: here we declare the volumeb by referencing the PVC created in the previous step.
+* specs.volumes: here we declare the volumeb by referencing the PVC created in the previous step.
 
 
 To deploy it, we'll use the following command:
