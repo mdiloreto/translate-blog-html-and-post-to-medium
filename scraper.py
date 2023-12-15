@@ -17,7 +17,6 @@ class Scraper:
 
         return ul_list       
 
-
     def html_process(self):
         content_list = []
         
@@ -53,7 +52,7 @@ class Scraper:
                     if element.find('ul'):
                         nested_ul = element.find('ul')
                         for item in nested_ul.find_all('li', recursive=False):
-                            if item.find('ul')
+                            if item.find('ul'):
                                 item_ul = item.find('ul')
                                 text = item_ul.get_text(strip=True)
                                 content_list.append({'type': 'bullet-list', 'content': text})                                
