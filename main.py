@@ -24,8 +24,15 @@ if __name__ == "__main__":
     #         print(f"{element['type']}: {element['content']}\n")
     
     print("Initializing translation process...")   
-    # Initialize Translator
+  # Check Enviroment Variables
+    if not endpoint:
+        raise ValueError("No endpoint found in environment variables")
+      
+    if not credential:
+        raise ValueError("No credential found in environment variables")
+  # Initialize Translator
     translator = Translator(endpoint, credential)
+    
         
     # Translate Content
     content_en = []
