@@ -5,12 +5,6 @@ from publish_medium import MediumPublisher
 import os
 # from md_to_html import Md_to_html
 
-# ## DOC TRANSLATOR
-# endpoint_doc = "https://mb-translator-doc-app.cognitiveservices.azure.com/"
-# credential_doc = AzureKeyCredential("d872d8ad6b8c404581fe3a31b849ff0b")
-# document_translation_client_doc = DocumentTranslationClient(endpoint_doc, credential_doc)
-
-
 ## Text Translator
 
 endpoint = "https://api.cognitive.microsofttranslator.com/"
@@ -19,15 +13,17 @@ credential = "d8a486b4b00543a29b37756c3d874ed5"
 
 
 if __name__ == "__main__":
+    print("Starting scraping process...")
+
     scraper = Scraper('https://madsblog.net/2023/11/24/storage-persistente-en-gke/')
     scraper.fetch_content()
     content = scraper.html_process()
        
   # GET content
    
-    for element in content:
-        if element['type'] == "bullet-list": 
-            print(f"{element['type']}: {element['content']}\n")
+    # for element in content:
+    #     if element['type'] == "bullet-list": 
+    #         print(f"{element['type']}: {element['content']}\n")
 
     # Initialize Translator
     translator = Translator(endpoint, credential)

@@ -47,22 +47,13 @@ class Scraper:
                         continue  # Skip these paragraphs
                     content_list.append({'type': 'paragraph', 'content': paragraph_text})
                   
-                  
                 elif element.name == 'ul':
-                    if element.find('ul'):
-                        nested_ul = element.find('ul')
-                        for item in nested_ul.find_all('li', recursive=False):
-                            if item.find('ul'):
-                                item_ul = item.find('ul')
-                                text = item_ul.get_text(strip=True)
-                                content_list.append({'type': 'bullet-list', 'content': text})                                
-                            text = item.get_text(strip=True)
-                            content_list.append({'type': 'bullet-list', 'content': text})
+                    if element.parent.name == 'li':
+                        continue  
                     else:
-                        for item in element.find_all('li', recursive=False):
-                            text = item.get_text(strip=True)
-                            content_list.append({'type': 'bullet-list', 'content': text})
-
+                        element.find('li')
+                        text = element.get_text()
+                        content_list.append({'type': 'bullet-list', 'content': text})                                
 
                 elif element.name == 'img':
                     # Process as image

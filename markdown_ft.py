@@ -1,3 +1,4 @@
+import re 
 
 class Convertmarkdown:
     def __init__(self, content, filename):
@@ -5,22 +6,29 @@ class Convertmarkdown:
         self.filename = filename
     
     
+    def check_bullet_format(self, current_line, next_line):
+        # Check if current line ends with ":" and next line starts with a space
+        return current_line.endswith(':') and (not next_line.strip())
+
     def process_bullets(self, bullet_content):
         bullet_points = bullet_content.split('\n')
         markdown_bullets = ""
-        l = 0
-        for point in bullet_points:
-            if l == 0:
-                markdown_bullets += f"* {point}"
-            # Determine the indentation level (assumes 2 spaces per indent level)
-                l = l+1
+
+        for i in range(len(bullet_points)):
+            current_line = bullet_points[i]
+            next_line = bullet_points[i + 1] if i + 1 < len(bullet_points) else ""
+
+            if self.check_bullet_format(current_line, next_line):
+                markdown_bullets += f"{current_line}\n"  # Add current line without bullet
+                if not next_line.strip():
+                    continue  # Skip the next line if it's empty or whitespace
             else:
-                indentation_level = '   ' * (point.count("   "))  # Counting double spaces for each indent level
-                formatted_point = point.strip()
-                if formatted_point:
-                    markdown_bullets += f"{indentation_level}- {formatted_point}\n" # <---- Here we set the bullet type. 
-                l = l+1
-            l = l+1
+                if current_line.strip():
+                    markdown_bullets += f"* {current_line}\n" 
+                else:
+                    markdown_bullets += f"{current_line}\n"  # Keep empty lines as they are
+                    
+
         return markdown_bullets
     
     # def process_bullets(self, bullet_content):
