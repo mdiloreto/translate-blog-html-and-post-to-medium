@@ -13,7 +13,7 @@ credential = os.getenv('AZUREAI_CREDENTIAL')
 if __name__ == "__main__":
     print("Starting scraping process...")
 
-    scraper = Scraper('https://madsblog.net/2023/11/24/storage-persistente-en-gke/')
+    scraper = Scraper('https://madsblog.net/2023/11/24/storage-persistente-en-gke/') # <<<<< <<<<<<<<< SET THE URL 
     scraper.fetch_content()
     content = scraper.html_process()
     print("Finished scraping process...")   
