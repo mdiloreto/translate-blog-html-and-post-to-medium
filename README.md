@@ -9,6 +9,12 @@ This project, named "translate-blog-html-and-post-to-medium", automates the tran
 - Converts the translated content into Markdown format.
 - Publishes the translated post to Medium as a draft.
 
+## Things that will get improved soon: 
+
+- Links detection and convertion. 
+- User interface
+- Free translation platform alternative to Azure AI
+
 ## Prerequisites
 - Python 3.x
 - Azure AI Translation API key
