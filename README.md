@@ -1,7 +1,7 @@
 # Translate Blog HTML and Post to Medium
 
 ## Description
-This project, named "py-chatgpt-translate-webpost", automates the translation of HTML blog posts and their publication on Medium. It aims to assist bloggers and content creators in reaching a wider audience by translating and posting their blogs in different languages.
+This project, named "translate-blog-html-and-post-to-medium", automates the translation of HTML blog posts and their publication on Medium. It aims to assist bloggers and content creators in reaching a wider audience by translating and posting their blogs in different languages.
 
 ## Features
 - Scrapes HTML content from a specified blog post.
