@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ```
 ## Usage
 
-Set the URL in the main.py file in line #16:
+Set the URL in the `main.py` file in line #16:
 
 ```bash
 scraper = Scraper('https://madsblog.net/2023/11/24/storage-persistente-en-gke/') # <<<<< <<<<<<<<< SET THE URL 
