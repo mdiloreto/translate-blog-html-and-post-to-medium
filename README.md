@@ -16,11 +16,13 @@ This project, named "translate-blog-html-and-post-to-medium", automates the tran
 
 ## Installation
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/mdiloreto/translate-blog-html-and-post-to-medium.git
+
+  ```bash
+  git clone https://github.com/mdiloreto/translate-blog-html-and-post-to-medium.git
   ```
 
 ## Navigate to the directory:
+
 ```bash
 cd translate-blog-html-and-post-to-medium
 pip install -r requirements.txt
