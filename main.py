@@ -7,8 +7,8 @@ import os
 
 ## Text Translator
 
-endpoint = "https://api.cognitive.microsofttranslator.com/"
-credential = "d8a486b4b00543a29b37756c3d874ed5"
+endpoint = os.getenv('AZUREAI_ENDPOINT')
+credential = os.getenv('AZUREAI_CREDENTIAL')
 # client = TextTranslateionClient(endpoint,credential)
 
 
