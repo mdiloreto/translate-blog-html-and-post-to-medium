@@ -17,11 +17,12 @@ if __name__ == "__main__":
     scraper.fetch_content()
     content = scraper.html_process()
     print("Finished scraping process...")   
+    
   # GET content
-   
     # for element in content:
     #     if element['type'] == "bullet-list": 
     #         print(f"{element['type']}: {element['content']}\n")
+    
     print("Initializing translation process...")   
     # Initialize Translator
     translator = Translator(endpoint, credential)
@@ -42,15 +43,17 @@ if __name__ == "__main__":
     for element in content_en:
         print(f"{element['type']}: {element['content']}\n")
 
-    print("Converting to Markdown format...")     
+    print("Converting to Markdown format...") 
+        
   # Convert to Markdown
     markdownfile = "output.md"
     converter = Convertmarkdown(content_en, markdownfile)
     markdown_content = converter.convert_to_markdown()
     converter.save_to_markdown_file(markdown_content)  # Pass the generated markdown content to the method
-    print("Finish Markdown format...")     
-    print("Initializing Medium posting...")  
+    print("Finish Markdown format...")  
+    
   # Medium publish
+    print("Initializing Medium posting...")  
     access_token = os.getenv('MEDIUM_ACCESS_TOKEN')
     if not access_token:
         raise ValueError("No Medium access token found in environment variables")
@@ -62,16 +65,7 @@ if __name__ == "__main__":
         file_content = file.read()
     
         markdown_file_path = 'C:\\Users\\mateo\\OneDrive\\vscode\\py-chatgpt-translate-webpost\\output.md'
-    
-#     # Create an instance of the converter class
-#     converter = Md_to_html(markdown_file_path)
-    
-#     # Convert Markdown to HTML
-#     html_content = converter.markdown_to_html()
-    
-#     # Now you can use html_content as needed
-#     print(html_content)
-        
+  # Prepare Medium publish        
     user_id = Medium_publisher.get_user_id()
     title = ""
     for element in content_en:
@@ -79,6 +73,7 @@ if __name__ == "__main__":
             title = element['content']
             break 
     print("Posting content to Medium as Draft...")  
+  # Publish
     post = Medium_publisher.create_post(user_id, title, file_content)
     print("Medium post draft was created sucessfully!") 
     
