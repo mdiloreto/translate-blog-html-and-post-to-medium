@@ -1,3 +1,5 @@
+# Azure AI and Python: Automate HTML Translation and Medium Publishing
+
 
 This blog post was created automatically using Python and the power of Azure AI Text Translator.
 ![Image](https://madsblog.net/wp-content/uploads/2023/12/DALL·E-2023-12-16-01.05.38-A-digital-artwork-showcasing-the-Python-logo-and-the-Azure-logo-of-equal-size-with-a-dark-background.-The-logos-are-prominently-displayed-side-by-sid.png)

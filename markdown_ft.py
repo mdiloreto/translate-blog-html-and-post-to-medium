@@ -1,4 +1,5 @@
-import re 
+import re
+import os
 
 class Convertmarkdown:
     def __init__(self, content, filename):
@@ -48,8 +49,11 @@ class Convertmarkdown:
         
         markdown_content = ""
         for element in self.content:
+            
+            if element['type'] == 'title':
+                markdown_content += f"# {element['content']}\n\n"          
             if element['type'] == 'heading':
-                markdown_content += f"# {element['content']}\n\n"
+                markdown_content += f"## {element['content']}\n\n"
             elif element['type'] == 'paragraph':
                 markdown_content += f"\n{element['content']}\n"
             elif element['type'] == 'image':
@@ -65,5 +69,9 @@ class Convertmarkdown:
 
 
     def save_to_markdown_file(self, markdown_content):
-        with open(self.filename, 'w', encoding='utf-8') as file:
+        full_path = os.path.join(os.getcwd(), self.filename)
+
+        with open(full_path, 'w', encoding='utf-8') as file:
             file.write(markdown_content)
+        
+        return full_path
