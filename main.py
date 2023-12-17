@@ -5,6 +5,7 @@ from publish_medium import MediumPublisher
 import os
 ## Text Translator
 
+access_token = os.getenv('MEDIUM_ACCESS_TOKEN')
 endpoint = os.getenv('AZUREAI_ENDPOINT')
 credential = os.getenv('AZUREAI_CREDENTIAL')
 # client = TextTranslateionClient(endpoint,credential)
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     content = scraper.html_process()
     print("Finished scraping process...")   
     
-  # GET content
+  # GET content from scraping
     # for element in content:
     #     if element['type'] == "bullet-list": 
     #         print(f"{element['type']}: {element['content']}\n")
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     
   # Medium publish
     print("Initializing Medium posting...")  
-    access_token = os.getenv('MEDIUM_ACCESS_TOKEN')
+
     if not access_token:
         raise ValueError("No Medium access token found in environment variables")
 
