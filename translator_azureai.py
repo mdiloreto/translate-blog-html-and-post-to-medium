@@ -3,7 +3,7 @@ from azure.core.credentials import AzureKeyCredential
 import requests, uuid, json
 
 
-class Translator:
+class Translator_azure:
     def __init__(self, endpoint, key):
         self.endpoint = endpoint  # Store the endpoint as an instance variable
         self.key = key  # Store the key as an instance variable
