@@ -10,7 +10,6 @@ class Translator_azure:
         self.client = DocumentTranslationClient(endpoint, AzureKeyCredential(key))
 
     def translate(self, text):
-        # Your code to translate text
         location = "eastus"
         path = '/translate'
         constructed_url = self.endpoint + path

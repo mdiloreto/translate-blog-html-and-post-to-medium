@@ -1,258 +1,135 @@
-# Use GCP Cloud Translation API in Python
+# TLS Termination (or SSL Offloading) in Azure App Gateway – part 2
 
+![Image](https://madsblog.net/wp-content/uploads/2023/09/image-6-1024x1024.png)
 
-We continue exploring AI services in different Cloud Providers as our “multi-cloud” mission demands.
 
-In this case we will be calling the GCP translation API “Cloud Translation API” using Python.
-![Image](https://madsblog.net/wp-content/uploads/2024/01/GCP_Pyt.png)
+In part 2 of this series, we'll perform the step-by-step of publishing a site through Azure Application Gateway with SSL Offloading in a lab environment.
 
-## Cloud Translation API
+Scenario:
 
+* 1 App Gateway named "madsblogtest-ag-waf", tier WAF V2. 
+* 1 App Service called "test-madsblog" (Web App).
 
-Google Cloud Platform (GCP) Cloud Translation API is a service that allows developers to integrate automatic text translation. It uses Google's machine learning technology to deliver fast and accurate translations between thousands of language pairs.
 
-Versions:
 
-* Cloud Translation API Basic (v2): This is the most established version and offers basic machine translation functionalities. It is ideal for applications that need simple text translations. This version uses Google's machine learning and statistical translation model.
-* Cloud Translation API Advanced (v3): This version is newer and offers additional features compared to Basic. It includes automatic language detection, the ability to translate text in formats like HTML while preserving the original formatting, and improved translation quality using Google's latest deep learning models. It also provides features to customize translations and optimize them for specific domains or vocabularies.
 
+Objective:
 
+* We will publish this App Service using SSL Offloading to Azure Application Gateway. 
+* Public URL: test-site.madsblog.net.
+* We'll use a Lets Encrypt certificate. 
 
-## Demo
 
 
-We will be using the Cloud Translation API in its Advanced version. We will use it to incorporate it into a Python application that will translate the posts using web scraping.
-## Enable the API
 
+Creating a Backend Pool
 
-Firstly, as with all GCP services, we must enable the API.
+We must enter our AppGateway, in the left menu go to Backend Pools and click on Add:
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-1.png)
 
-For this:
 
-* We will search for “translation api” in the general search engine.
-* Then we will click on “Cloud Translation API”.
+We added our App Service "test-madsblog" as a backend pool.
 
+Creating Backend Settings
 
+In the left menu, go to Backend Settings in the left menu of our app gateway and click on Add:
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-3.png)
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-29.png)
 
+Here it is important that we configure HTTP traffic for our Backend. This will allow us to perform SSL Termination at the App Gateway level.
 
-* If it is not activated, instead of “manage” it will say “Enable” and we must click on this option.
-* In our case, it is already enabled.
+Creating a Custom Probe
 
+We will create the Custom Probe so that the health of our backend is monitored correctly by our App Gateway.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-8.png)
 
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-30.png)
+Due to SSL Termination, the traffic we will monitor with our health probe will be HTTP traffic from the AppGateway to the Backend.
 
+Upload Certificate
 
-* Then we will click on Manage.
+Before creating the Listener of our host, we must upload the Lets Encrypt certificate. Go to Listeners and click on the Listener TLS certificates tab (preview):
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-4.png)
 
 
+Now we upload the cert in PFX!
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-5.png)
 
-## Create Application Default Credentials (ADC)
 
+We will now have our certificate available for use in the App Gateway.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-6.png)
 
-Now we will create the credentials for the authorization of our API:
 
-* After clicking on Manage, it will take us to the APIs & Services section.
-* We will go to the “Credentials” section.
-* We will click on “+ Create Credentials”.
+Creating Listeners
 
+Now, we can proceed to create the Listener.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-10.png)
 
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-31.png)
+In this case, we will configure a site only for the DNS Name test-site.madsblog.net, because it is the only hostname that supports our certificate. It is important to note that we can configure more than one DNS Name for the listener, but we must take this into account when requesting the certificate.
 
+Creating Routing Rules
 
-* We will select “Service Account”.
+Now so that all the elements are configured in our AppGateway: Backend Pool + Settings, Custom Health Probe and Listener (with certificate), we can configure our routing rule.
 
+Go to Rules and click Add:
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-9.png)
 
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-11.png)
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-32.png)
 
+Here we could add a path to have different traffic paths and also granularize our listener. In this case, we will not cover this functionality.
 
-* We'll give it a name, the ID will autofill, and we'll enter a description.
+DNS Record Settings:
 
+Now we can point to our public DNS record of test-site.madsblog.net. To do this, we must enter our public DNS and configure the CNAME record pointing to the public DNS Name of our App Gateway.
 
+This detail can be found in the Public Front End Settings section of our App Gateway.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-12.png)
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-33.png)
 
+Ready! Now we have published our site through Azure Application Gateway, but there is something else missing...
 
-* We will give the necessary permissions.
-* In this case the minimum permission that we must give will be “Cloud Translation API User”
+If we try to connect to our Site through the Public URL now, we will have an error:
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-14.png)
 
 
+This happens because, in addition to configuring our publication, we must make sure that our AppGateway can communicate correctly with the App Service. Let's take a look:
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-34.png)
+Configuring App Service (Web App)
 
+In the first instance we must take care of 2 settings:
 
-* We will not give access to any user to impersonate the SA.
+1) Enable HTTP traffic! App Services do not accept HTTP traffic by default, we must enable it manually:
 
+* We must go to our Web App. 
+* Go to Configuration>General Settings:  
 
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-35.png)
 
-## Creation of SA Key
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-15.png)
 
 
-Now we will create the Authentication Key for our Service Account:
+2) Enable our Custom Domain. To be able to use a domain other than *.azurewebsites.net we must manually configure the costom domain in our WebApp. Click here to see the step-by-step.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-16.png)
 
-* We will continue in “APIs & Services”, in the credentials section, we will click on the newly created SA.
 
+The Domain will remain in No binding since it will NOT use SSL at the Backend level. This configuration must only be done so that our App Service supports the connection with that domain name.
 
+Traffic restriction in the Backend
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-36-1024x690.png)
+Finally, to complete the configurations at the security level. We must restrict access in our App Service so that it ONLY allows traffic from our App Gateway.
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-19-1024x426.png)
 
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-17.png)
 
-* Once in our SA, we will go to the “Keys” section.
-* Then, we will click on “Add Key”
 
+We must do the same with any other backend.
 
+Entrance exam
 
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-37.png)
+Now, once these steps have been completed, we can verify the secure access to our Site through Azure AppGateway with TLS/SSL Termination 🙂
+![Image](https://madsblog.net/wp-content/uploads/2023/07/image-18.png)
 
-
-* We will create the KEY in JSON format.
-
-
-
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-38.png)
-
-
-* The credentials file will download.
-
-
-
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-39.png)
-
-
-* We must store this file safely.
-* In this case we will send it to the repository folder and exclude it from git using the gitignore file.
-* This is not recommended for production, it should be stored in a secrets repository.
-
-
-
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-40.png)
-
-
-* The JSON file of our SA will be the fundamental parameter for the login.
-
-
-
-## Login configuration for our code
-
-
-The GCP connection client will look for the “GOOGLE_APPLICATION_CREDENTIALS” environment variable.
-
-* In this case, we will add it as an environment variable in PowerShell.
-
-
-
-
-```
-$env:GCP_PROJECT_ID="<project_id>"
-$env:GOOGLE_APPLICATION_CREDENTIALS="<path/to/file.json>"
-```
-## Python packages
-
-
-For our code to work we must install the packages required by the libraries to be used.
-
-We install the following PIP packages:
-
-
-
-
-```
-pip install google-cloud-translate==2.0.1
-pip install --upgrade google-cloud-translate
-```
-
-* The step of upgrading the package is essential for its correct functioning.
-
-
-
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-43-1024x318.png)
-
-
-* If we do not perform the upgrade, the code will not work as expected.
-
-
-
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-44-1024x277.png)
-
-## Python code for the request
-
-
-We use the following code in our translation module to call the GCP API via Python:
-
-```
-from google.cloud import translate
-
-class Translator_gcp:
-    def __init__(self, text, project_id):
-        self.text = text
-        self.project_id = project_id
-
-    def translate_text(self):
-        """Translating Text."""
-
-        client = translate.TranslationServiceClient()
-
-        location="global"
-
-        parent = f"projects/{self.project_id}/locations/{location}"
-
-        response = client.translate_text(
-            request={
-                "parent": parent,
-                "contents": [self.text],
-                "mime_type": "text/plain", # mime types: text/plain, text/html
-                "source_language_code": "en",
-                "target_language_code": "en-US",
-            }
-        )
-
-        # Display the translation for each input text provided
-        for translation in response.translations:
-            print(f"Translated text: {translation.translated_text}")
-
-        return response.translations[0].translated_text
-```
-
-* In this case, in the Return I am using the extraction of the plain translated text of the response. I do this for the purposes of my application.
-
-
-
-## Module call in main.py file
-
-
-To call this module from main.py I use the following block of code:
-
-```
-project_id = os.getenv('GCP_PROJECT_ID')
-GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-
-    content_en = []
-    print("2. Translation in progress...")
-    for element in content:
-        if element['type'] != 'image': # Skip translation for images
-            # translated_text = Translator_azure.translate(element['content']) ##Translate Azure AI
-            translator_gcp = Translator_gcp(element['content'], project_id) ## Translate with GCP Translation API
-            translated_text = translator_gcp.translate_text()
-            content_en.append({'type': element['type'], 'content': translated_text})
-        else:
-            content_en.append(element) # Add images as-is
-    print("2. Translation finished...")
-```
-
-You can see the complete code at https://github.com/mdiloreto/translate-blog-html-and-post-to-medium
-## Code test
-
-
-Now we test our app:
-![Image](https://madsblog.net/wp-content/uploads/2024/01/image-46.png)
-
-
-The text is translated correctly using the GCP Cloud Transaltion Advanced API :)
 
 Mateo Di Loreto

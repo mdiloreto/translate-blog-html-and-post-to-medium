@@ -1,4 +1,5 @@
 .venv
+*venv*
 others
 heroic-dynamo-410801-4f6254fca43a.json
 __pycache__
