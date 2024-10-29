@@ -1,135 +1,241 @@
-# TLS Termination (or SSL Offloading) in Azure App Gateway – part 2
+# Types of Cloud Migration
 
-![Image](https://madsblog.net/wp-content/uploads/2023/09/image-6-1024x1024.png)
 
+We continue with some basic theoretical content of Cloud, in this case we are going to talk about the different migration strategies. You can review the note on Cloud Computing Fundamentals – Learn Multi Cloud(s) (madsblog.net)
+![Image](https://madsblog.net/wp-content/uploads/2024/09/image-6.png)
 
-In part 2 of this series, we'll perform the step-by-step of publishing a site through Azure Application Gateway with SSL Offloading in a lab environment.
+## Introduction
 
-Scenario:
 
-* 1 App Gateway named "madsblogtest-ag-waf", tier WAF V2. 
-* 1 App Service called "test-madsblog" (Web App).
+When we start planning our migration process, we must start by determining our destination and starting point. Our starting point can be: on-premises, co-hosting, housing or from a cloud provider (cloud-to-cloud migration). Our destination will be the Cloud, from the provider we like the most.
 
+This is where we must keep in mind that our migration process must be carefully evaluated, it must involve a process of discovery and detailed analysis of our source infrastructure.
 
+I recommend paying close attention to the Assessment and Discovery process, as it will lay the foundation for our migration process and allow us to be successful.
+## Engage teams
 
 
-Objective:
+Migration processes are usually carried out and are the responsibility of the infrastructure team, but it is very important that this process also involves:
 
-* We will publish this App Service using SSL Offloading to Azure Application Gateway. 
-* Public URL: test-site.madsblog.net.
-* We'll use a Lets Encrypt certificate. 
+* The technical owners of the applications (by this I mean the code). 
+* The business owners of the applications. 
+* Leadership teams and key roles.
+* Teams in charge of dependencies or integrations of the applications involved. 
 
 
 
+## Types of Migration
 
-Creating a Backend Pool
 
-We must enter our AppGateway, in the left menu go to Backend Pools and click on Add:
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-1.png)
+We can classify migrations into the following types:
 
+* Rehost: lift and shift.
+* Replatform: lift and optimize.
+* Refactor: move and improve.
+* Re-architect: continue to modernize.
+* Rebuild: remove and replace, also called rip and replace.
+* Repurchase.
 
-We added our App Service "test-madsblog" as a backend pool.
 
-Creating Backend Settings
 
-In the left menu, go to Backend Settings in the left menu of our app gateway and click on Add:
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-3.png)
+## Rehost: Lift and Shift
 
 
-Here it is important that we configure HTTP traffic for our Backend. This will allow us to perform SSL Termination at the App Gateway level.
+We start with the well-known "lift and move". This type of migration involves moving workloads "as-is" (as they are), making only minimal modifications so that the workloads can function optimally in the target environment.
 
-Creating a Custom Probe
+This type of migration is ideal for laying the foundations when migrating to the cloud. This allows the team to begin to see some of the benefits of being in the cloud while maintaining the same tools and skills they used in on-prem.
 
-We will create the Custom Probe so that the health of our backend is monitored correctly by our App Gateway.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-8.png)
+Lift and Shift is very fast and relatively simple, and all Cloud Providers have a Native tool that allows you to perform this procedure without problems and with a tool supported by the manufacturer that is capable of integrating with different Source platforms such as VMWare for VMs or directly for physical servers. Examples of these tools: GCP Migrate to Virtual Machines or Azure Migrator.
 
+Maintaining IaaS workloads in the cloud can be costly. When migrating using the Lift and Shift approach, the costs are often high because we do not take full advantage of the benefits offered by the cloud. While this model reduces responsibilities for administrators, as the cloud provider is responsible for maintaining hardware, hypervisors, networks, and more, it is not very efficient in terms of compute value versus cost. In fact, many organizations that rely heavily on IaaS end up opting for a Cloud Exit.
 
-Due to SSL Termination, the traffic we will monitor with our health probe will be HTTP traffic from the AppGateway to the Backend.
+We must be vigilant and optimize our workloads for the Cloud.
+## Replatform: lift and optimize
 
-Upload Certificate
 
-Before creating the Listener of our host, we must upload the Lets Encrypt certificate. Go to Listeners and click on the Listener TLS certificates tab (preview):
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-4.png)
+In this type of migration, it takes many more of the advantages of the core competencies of the Cloud: elasticity, redundancy, performance optimization, and security.
 
+This strategy involves more work, but it can help us improve the impact of costs.
 
-Now we upload the cert in PFX!
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-5.png)
+Continuing with the example of migrating a VM-based workload from on-prem to Cloud:
 
+* We could deploy Compute Engine Managed Instances on GCP or Azure Scale Sets to add scalability and elasticity to our workloads. 
 
-We will now have our certificate available for use in the App Gateway.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-6.png)
 
 
-Creating Listeners
 
-Now, we can proceed to create the Listener.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-10.png)
+* Another example would be migrating from a MySQL database engine running on a Server to the Cloud SQL or Azure Database service. 
 
 
-In this case, we will configure a site only for the DNS Name test-site.madsblog.net, because it is the only hostname that supports our certificate. It is important to note that we can configure more than one DNS Name for the listener, but we must take this into account when requesting the certificate.
 
-Creating Routing Rules
+## Refactor: move and improve
 
-Now so that all the elements are configured in our AppGateway: Backend Pool + Settings, Custom Health Probe and Listener (with certificate), we can configure our routing rule.
 
-Go to Rules and click Add:
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-9.png)
+With this strategy, workloads will be modified before or while they are migrated to the cloud.
 
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-11.png)
+Refactoring migrations allow you to take advantage of cloud features such as scalability and high availability. It is also possible to improve the architecture to increase the portability of the application.
 
+We must keep in mind that this type of migration takes longer than a rehost migration, as it is necessary to refactor the workloads.
 
-Here we could add a path to have different traffic paths and also granularize our listener. In this case, we will not cover this functionality.
+In addition, refactoring requires acquiring new skills.
 
-DNS Record Settings:
+Example:
 
-Now we can point to our public DNS record of test-site.madsblog.net. To do this, we must enter our public DNS and configure the CNAME record pointing to the public DNS Name of our App Gateway.
+* Refactor Jobs to run in Cloud Functions. 
+* Migrate Compressed application from a VM to a PaaS Service such as Google Cloud Run or Azure Container Apps. 
 
-This detail can be found in the Public Front End Settings section of our App Gateway.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-12.png)
 
 
-Ready! Now we have published our site through Azure Application Gateway, but there is something else missing...
+## Re-architect: continue to modernize
 
-If we try to connect to our Site through the Public URL now, we will have an error:
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-14.png)
 
+This type of migration is comparable to Refactor's strategy, but we add a bit of complexity. In this case a re-architect is made to change how the code works. This allows the code to be optimized to be executed in the Cloud.
 
-This happens because, in addition to configuring our publication, we must make sure that our AppGateway can communicate correctly with the App Service. Let's take a look:
+Example:
 
-Configuring App Service (Web App)
+* Refactoring a monolithic application to run on AKS or EKS as Microservices. 
 
-In the first instance we must take care of 2 settings:
 
-1) Enable HTTP traffic! App Services do not accept HTTP traffic by default, we must enable it manually:
 
-* We must go to our Web App. 
-* Go to Configuration>General Settings:  
+## Rebuild: remove and replace
 
 
+In this case, we decommissioned the on-premises application and completely redesigned it from 0 in the cloud.
 
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-15.png)
+This type of migration allows the generation of a Cloud-Native solution from the beginning since it will be designed and implemented in the context of the cloud.
 
+These rebuild migrations can take longer than rehost or refactor migrations. They are not suitable for out-of-the-box applications as they require rewriting the application. It is important to evaluate the additional time and effort to redesign it.
 
-2) Enable our Custom Domain. To be able to use a domain other than *.azurewebsites.net we must manually configure the costom domain in our WebApp. Click here to see the step-by-step.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-16.png)
+This type of migration also requires new skills and tools to configure and deploy the app in the new environment.
+## Repurchase
 
 
-The Domain will remain in No binding since it will NOT use SSL at the Backend level. This configuration must only be done so that our App Service supports the connection with that domain name.
+In this case, it is when a SaaS service is acquired as the target environment.
 
-Traffic restriction in the Backend
+From a resource standpoint, a buyback migration is often simpler than refactoring, rebuilding, or re-architecting. However, it can be more expensive, and you may not get the same level of granular control over your cloud environment.
 
-Finally, to complete the configurations at the security level. We must restrict access in our App Service so that it ONLY allows traffic from our App Gateway.
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-19-1024x426.png)
+For example:
 
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-17.png)
+* If you used email or on-premises collaboration tools, moving to Microsoft 365 is a Repurchase. 
 
 
-We must do the same with any other backend.
 
-Entrance exam
+## Adoption Frameworks
 
-Now, once these steps have been completed, we can verify the secure access to our Site through Azure AppGateway with TLS/SSL Termination 🙂
-![Image](https://madsblog.net/wp-content/uploads/2023/07/image-18.png)
+
+Each Cloud has an Adoption Framework that allows a formal framework to be given to the maturity that each organization has to migrate to the cloud. Here are the Big 3 Adoption Frameworks:
+
+* Adoption Framework | Google Cloud
+* Microsoft Cloud Adoption Framework for Azure – Cloud Adoption Framework | Microsoft Learn
+* AWS Cloud Adoption Framework (amazon.com)
+
+
+
+## Common prerequisites for any migration
+
+
+* Assess and Discover.
+* Planning and construction. 
+* Test Cases and Pilot Tests.  
+
+
+
+## Assess and Discover
+
+
+Basically, in this stage of the migration we are going to make an inventory of all the resources to be migrated and we will determine the requirements and dependencies of each one. We must gain a Very Deep knowledge about the workloads we are going to migrate.
+
+Here we will have a great participation of all the teams involved: technical leaders, app owners, business leaders, networking, etc...
+
+It is important to detect early blockers and set expectations for stakeholders.
+
+Some of the tasks of this stage will be:
+
+* Generate an inventory.
+* Catalog applications and dependencies. 
+* Train teams.
+* Generate PoC if necessary. 
+* Calculate TCO. 
+
+
+
+
+This is how an inventory resulting from this stage can be seen:
+![Image](https://madsblog.net/wp-content/uploads/2024/09/image-1-1024x476.png)
+
+![Image](https://madsblog.net/wp-content/uploads/2024/09/image-4-1024x319.png)
+
+
+From this information we must be able to generate a categorization in terms of criticality / level of difficulty of our Workloads:
+![Image](https://madsblog.net/wp-content/uploads/2024/09/image-5-1024x651.png)
+
+## Planning and construction
+
+
+At this stage we will plan and build the foundations of our migration:
+
+* Project definitions. 
+* Project planning. 
+* Landing Zones.
+
+
+
+
+Some of the tasks we'll perform in this step include:
+
+* Agree and define action plan.
+* Assign a Timeline (or action schedule). 
+* Choose the migration strategy. 
+* Choose the migration tool(s). 
+* Build our landing zones (if necessary, as they may exist previously).
+
+
+
+
+At this stage, we must also take into account:
+
+* Resource hierarchy: Designing a proper resource structure is crucial for billing, security, and team management.
+
+
+
+
+* Identity and Access Management (IAM): Focuses on how to manage access to Google Cloud resources through users, groups, and service accounts, ensuring granular control and best security practices.
+
+
+
+
+* Connectivity and networking: It is important to plan network design, data transfer, and adjust parameters such as maximum transmission unit (MTU) to optimize performance.
+
+
+
+
+* Billing: The concepts of resource hierarchy and billing are related. It's critical to understand how resources are billed.
+
+
+
+
+* Governance: Establishing control and management strategies is vital to maintaining the security, compliance, and organization of cloud resources.
+
+
+
+
+* Security and Compliance: The management and security of systems in the United States require a clear understanding of responsibilities and threats, in addition to implementing proactive detection and monitoring practices.
+
+
+
+## Test Cases and Pilot Tests
+
+
+For each of the migrations, it is advisable to add a stage of Test Cases and Pilot Test once the migration tool has been configured. These phases will ensure the effectiveness of the process, minimizing risks and disruptions.
+
+Additionally:
+
+* Monitoring and analysis: It is crucial to monitor each migration throughout the process to obtain key metrics such as execution times, errors, or performance impacts. This will allow future processes to be adjusted and time optimized.
+* Reversal plan: Make sure you have a contingency or reversal plan in place to minimize risks in the event of possible failures during the pilot test.
+* Automation: If possible, automate part of the testing process to reduce manual intervention and ensure consistency in results.
+
+
+
 
 
 Mateo Di Loreto

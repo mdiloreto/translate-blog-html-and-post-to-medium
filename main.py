@@ -17,7 +17,7 @@ credential = os.getenv('AZUREAI_CREDENTIAL')
 if __name__ == "__main__":
     print("1. Starting scraping process...")
 
-    scraper = Scraper('https://madsblog.net/2023/07/08/tls-termination-o-ssl-offloading-en-azure-app-gateway-parte-2/') # <<<<< <<<<<<<<< SET THE URL 
+    scraper = Scraper('https://madsblog.net/2024/09/22/tipos-de-migracion-a-la-nube/') # <<<<< <<<<<<<<< SET THE URL 
     scraper.fetch_content()
     content = scraper.html_process()
     print("1. Scraping process finished...")   
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     print("6. sorry for the inconvenience :).") 
 
   #   if not access_token:
+  
   #       raise ValueError("No Medium access token found in environment variables")
 
   #   Medium_publisher = MediumPublisher(access_token)
