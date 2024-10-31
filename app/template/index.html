@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Transcriptor</title>
+</head>
+<body>
+    <h1>Transcribe Video Content</h1>
+    <form id="transcription-form">
+        <input type="text" id="url" placeholder="Enter video URL" required>
+        <button type="submit">Transcribe</button>
+    </form>
+    <p id="status"></p>
+    <a id="download-link" style="display:none;">Download Markdown</a>
+
+    <script>
+        document.getElementById('transcription-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('url').value;
+            const response = await fetch('/api/transcribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const downloadUrl = URL.createObjectURL(blob);
+                const link = document.getElementById('download-link');
+                link.href = downloadUrl;
+                link.style.display = 'block';
+                link.download = 'transcription.md';
+                link.textContent = 'Download Markdown';
+            } else {
+                document.getElementById('status').textContent = 'Transcription failed';
+            }
+        });
+    </script>
+</body>
+</html>

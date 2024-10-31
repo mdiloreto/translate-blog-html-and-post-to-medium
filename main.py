@@ -1,8 +1,8 @@
-from translator_azureai import Translator_azure
-from translator_gcp import Translator_gcp
-from scraper import Scraper
-from markdown_ft import Convertmarkdown
-from publish_medium import MediumPublisher
+from core.translator_azureai import Translator_azure
+from core.translator_gcp import Translator_gcp
+from core.scraper import Scraper
+from core.markdown_ft import Convertmarkdown
+from core.publish_medium import MediumPublisher
 import os
 ## Text Translator
 
